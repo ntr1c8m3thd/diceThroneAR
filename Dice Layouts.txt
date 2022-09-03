@@ -1,0 +1,105 @@
+using System; using System.Collections; using System.Threading; //using Superpowers;
+
+namespace diceThroneAR
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {   int charSelect; charSelect = GameFlow.characterSelect();
+            Character player1 = new Character("1", CharacterInfo.names[charSelect], CharacterInfo.introQuips[charSelect]);
+            player1.statusEffects.AddRange(CharacterInfo.generateStatusEffects(charSelect));      // *** can potentially condense this process in the Character constructor
+            player1.cards.AddRange(CharacterInfo.generateDeck(charSelect));
+            player1.IntroCharacter();
+            GameFlow.gameModeSelect(); 
+            /*
+            Battleground.jaggedLesson();
+            Battleground.testGetAverage();*/  }
+    }
+}
+
+/*namespace Test2
+{
+
+}
+*/
+
+/*Vampire Lord^^^
+
+1-3 Claw Dice, 4-5 Gaze Dice, 6 Droplet Di
+Name: Vampire Lord / IntroQuip: "Only victory is sweeter than blood."
+
+/*Treeant
+
+1-3 Branch Dice, 4-5 Leaf Dice, 6 Spirit Di
+Name: Treeant / IntroQuip: "Woe to you who awakens the forest itself."
+
+/*Tactician^^^^
+
+1-3 Saber Dice, 4-5 Flag Dice, 6 Medal Di
+Name: Tactician / IntroQuip: "All I survey, I command."
+
+/*Shadow Thief
+
+1-2 Dagger Dice, 3-4 Bag Dice, 5 Card Di, 6 Shadow Di
+Name: Shadow Thief / IntroQuip: "Entering the shadows is my safe place.  Safe place to shank you."
+
+/*Seraph
+
+1-3 Blade Dice, 4 Wings Di, 5 Cross Di, 6 Angelic Pendant Di
+Name: Seraph / IntroQuip: ""
+
+/*Samurai
+
+1-3 Katana Dice, 4-5 Kabuto Dice, 6 Rising Sun Di
+Name: Samurai / IntroQuip: "I know only honor and shame.  There is no middle ground."
+
+/*Pyromancer
+
+1-3 Flame Dice, 4 Blaze Di, 5 Fiery Soul Di, 6 Meteor Di
+Name: Pyromancer / IntroQuip: "I just want to watch the world burn!"
+
+/*Paladin
+
+1-2 Sword Dice, 3-4 Helmet Dice, 5 Life Di, 6 Prayer Di
+Name: Paladin / IntroQuip: "To win with honor, purity, and righteousness is the only true victory."
+
+/*Ninja
+
+1-3 Ninjatō Dice, 4-5 Shuriken Dice, 6 Mask Di
+Name: Ninja / IntroQuip: "If you see me, it's too late."
+
+/*Moon Elf
+
+1-3 Arrow Dice, 4-5 Foot Dice, 6 Moon Di
+Name: Moon Elf / IntroQuip: "Look deep into the moon, for victory lies there!"
+
+/*Monk
+
+1-2 Fist Dice, 3 Palm Di, 4-5 Zen Dice, 6 Lotus Di
+Name: Monk / IntroQuip: "I am the calm before the storm."
+
+/*Huntress
+
+1 - 2 Spear Dice, 3 - 4 Claw Dice, 5 Bonded Soul Di, 6 Saber Tooth Di
+Name: Huntress / IntroQuip: "Two are better than one, in life and in battle."
+
+/*Gunslinger
+
+1-3 Bullet Dice, 4-5 Dash Dice, 6 Bullseye Di
+Name: Gunslinger / IntroQuip: "The gun is mightier than all of you."
+
+/*Cursed Pirate
+
+1-3 Cutlass Dice, 4-5 Booty Dice, 6 Skull Di
+Name: Cursed Pirate / IntroQuip: "Whatever it takes, th' booty will be mine."
+
+/*Barbarian
+
+1 - 3 Sword Dice, 4-5 Life Dice, 6 Pow Di
+Name: Barbarian / IntroQuip: "Hacking, slashing and mashing may not be elegant, but you know what, it works."
+
+/*Artificer
+
+1 - 3 Wrench Dice, 4 - 5 Gear Dice, 6 Bolt Di
+Name: Artificer / IntroQuip: "The probability of your demise is written in the schematics.  Let me show you."
+*/
