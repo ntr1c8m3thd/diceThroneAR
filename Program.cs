@@ -15,8 +15,8 @@ namespace diceThroneAR
             player1.IntroCharacter();
             GameFlow.gameModeSelect();
             GameFlow.gameMatchMaking(player1, GameFlow.player2);
-            //Battleground.jaggedLesson();
-            //Battleground.testGetAverage();
+            GameFlow.mainPhase(player1);
+            //Battleground.jaggedLesson(); Battleground.testGetAverage();
         }
     }
 }

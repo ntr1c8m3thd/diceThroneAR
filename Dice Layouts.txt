@@ -1,28 +1,3 @@
-using System; using System.Collections; using System.Threading; //using Superpowers;
-
-namespace diceThroneAR
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {   int charSelect; charSelect = GameFlow.characterSelect();
-            Character player1 = new Character("1", CharacterInfo.names[charSelect], CharacterInfo.introQuips[charSelect]);
-            player1.statusEffects.AddRange(CharacterInfo.generateStatusEffects(charSelect));      // *** can potentially condense this process in the Character constructor
-            player1.cards.AddRange(CharacterInfo.generateDeck(charSelect));
-            player1.IntroCharacter();
-            GameFlow.gameModeSelect(); 
-            /*
-            Battleground.jaggedLesson();
-            Battleground.testGetAverage();*/  }
-    }
-}
-
-/*namespace Test2
-{
-
-}
-*/
-
 /*Vampire Lord^^^
 
 1-3 Claw Dice, 4-5 Gaze Dice, 6 Droplet Di

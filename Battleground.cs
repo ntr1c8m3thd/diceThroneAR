@@ -3,13 +3,12 @@ using System.Text; using System.Threading.Tasks; using System.Threading;
 
 namespace diceThroneAR
 {
-    class Battleground //WHAT IS BATTLEGROUND? -- Functions that help with flow of game.
+    class Battleground                                                          //WHAT IS BATTLEGROUND? -- Functions that help the GameFlow class.
     {
         public static void printEachChar(string word)
         { for (int counter = 0; counter < word.Length; counter++)
             { Console.Write(word[counter].ToString()); Thread.Sleep(10); } }
-
-        public static void rollForFirst(Character p1, Character p2) // TODO : Update parameters to take List<Characters> and add TIEBREAKER protocol
+        public static void rollForFirst(Character p1, Character p2) //TODO: Update parameters to take List<Characters> and add TIEBREAKER protocol
         {
             int player = 1, highestRoll = 0, whoRolledHighest = 0;
             while (GameFlow.numberOfPlayers != 0)
@@ -26,17 +25,31 @@ namespace diceThroneAR
                 case 1: p1.winFirstRoll = true; break;
                 case 2: p2.winFirstRoll = true; break;
             }
-            if (p1.winFirstRoll == true) Console.WriteLine($"\n{p1.name} rolls first!");
-                else if (p2.winFirstRoll == true) Console.WriteLine($"\n{p2.name} rolls first!");
+            if (p1.winFirstRoll == true) Console.WriteLine($"\nPlayer 1, {p1.name}, rolls first!");
+                else if (p2.winFirstRoll == true) Console.WriteLine($"\nPlayer 2, {p2.name}, rolls first!\n");
+        }
+        public static void shuffleCards(Character p, int deckSize)
+        {
+            //Fisher-Yates shuffle algorithm
+            int i = 0, j = 0, MAXCARDS = deckSize;
+            Random sortRandom = new Random();
+            for (i = 0; i <= (MAXCARDS - 1); i++)
+            {
+                j = Convert.ToInt32(sortRandom.Next(0, i + 1));
+                var deck = p.cards[i];
+                p.cards[i] = p.cards[j];
+                p.cards[j] = deck;
+            }
         }
     }
-
     class Cards
     {
         public int CPCost { get; set; }
         public string Name { get; set; }
         public string Desc { get; set; }
         public int Type { get; set; }
+        public bool Drawn { get; set; } = false;
+        public bool isPlayable { get; set; } = false;
 
         public Cards(int cpcost, string name, string desc)
         {
@@ -50,7 +63,6 @@ namespace diceThroneAR
 
         public void Action() { }
     }
-
     class MainPhaseCard : Cards
     {
         new public string Type = "Main Phase Card"; // 1
@@ -63,7 +75,6 @@ namespace diceThroneAR
                 "Type: " + Type + " Description: " + Desc + "\n");
         }
     }
-
     class RollPhaseCard : Cards
     {
         new public string Type = "Roll Phase Card"; // 2
@@ -76,7 +87,6 @@ namespace diceThroneAR
                 "Type: " + Type + " Description: " + Desc + "\n");
         }
     }
-
     class InstantActionCard : Cards
     {
         new public string Type = "Instant Action Card"; //3
@@ -89,7 +99,6 @@ namespace diceThroneAR
                 "Type: " + Type + " Description: " + Desc + "\n");
         }
     }
-
     class HeroUpgradeCard : Cards
     {
         new public string Type = "Hero Upgrade Card"; //4

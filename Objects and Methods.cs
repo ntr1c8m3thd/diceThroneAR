@@ -4,32 +4,23 @@ using System.Linq; using System.Text; using System.Threading; using System.Threa
 namespace diceThroneAR
 {
     class GameFlow {
-
         public static int numberOfPlayers = 1;
         public static Character player2;
-        public static int characterSelect()
-        {   Console.WriteLine("Welcome to DICE THRONE!"); Thread.Sleep(500);
-            Console.WriteLine("Character List:"); Thread.Sleep(500);
+        public static int characterSelect()                                     //Allows Player 1 to choose his character from a list of available characters
+        {   Console.WriteLine("Welcome to DICE THRONE!"); Thread.Sleep(500); Console.WriteLine("Character List:"); Thread.Sleep(500);
             ArrayList characters = new() { "[1] Artificer", "[2] Barbarian", "[3] Cursed Pirate", "[4] Gunslinger", 
                                            "[5] Huntress", "[6] Monk", "[7] Moon Elf", "[8] Ninja" };
             ArrayList characters2 = new() { "[9] Paladin", "[10] Pyromancer", "[11] Samurai", "[12] Seraph", 
                                             "[13] Shadow Thief", "[14] Tactician", "[15] Treeant", "[16] Vampire Lord" };
             characters.AddRange(characters2); int count = 1; int count2 = 0;
-            foreach (string name in characters)
-            {                                       // cleanly displays 4 characters per row
-                if (count != characters.Count)
-                {
+            foreach (string name in characters)                                 //Cleanly displays 4 characters per row
+            { if (count != characters.Count) {
                     if (count2 != 3)
                     { /*printEachChar()*/Console.Write(name); Console.Write(", "); count++; count2++; Thread.Sleep(100); } 
-                    //can add or remove pEC() to name to speed up TESTING
-                    else
-                    { Console.Write(name + "\n"); count2 = 0; Thread.Sleep(100); }
-                }
-                else
-                    Console.Write(name); Thread.Sleep(100);
-            }                                      // Displays Character List
-            Thread.Sleep(555);
-            int charSelect = -1;                                                        // character selection prompt
+                      //Can add or remove pEC() to name to speed up TESTING
+                    else { Console.Write(name + "\n"); count2 = 0; Thread.Sleep(100); } }
+                else Console.Write(name); Thread.Sleep(100); }
+            Thread.Sleep(555); int charSelect = -1;
             while (charSelect < 0)
             {
                 Console.WriteLine("\nEnter your character's number to continue: ");
@@ -39,13 +30,9 @@ namespace diceThroneAR
                 else { Console.WriteLine($"You chose {characters[num - 1]}"); charSelect = num - 1; }
             }
             Thread.Sleep(555);
-            return charSelect;
-        }
-
-        public static void gameModeSelect() 
-        //gives user 7 game mode styles, generates a match based off of desired opponents
-        {
-            ArrayList gameMode = new()
+            return charSelect; }
+        public static void gameModeSelect()                                     //Prompts Player 1 to choose from 7 gamemode styles, generating a match based off of desired opponents
+        {   ArrayList gameMode = new()
             {
                 "[1] King of the Hill", "[2] 1v1", "[3] 2v2",
                 "[4] 3v3", "[5] 4v4", "[6] 2v2v2", "[7] 2v2v2v2"
@@ -60,11 +47,9 @@ namespace diceThroneAR
                     Console.WriteLine("Invalid value entered, try again.");
                 else if ((num < 1 || num > 7)) Console.WriteLine("Please select inputting a value 1 - 7");
                 else { Console.WriteLine($"You chose {gameMode[num - 1]}"); gameModeSelect = num; }
-            }                                              // game mode select
-            Thread.Sleep(1000);                            // return gameModeSelect; **not sure why i have this here lol
-
+            }
+            Thread.Sleep(1000);
             ArrayList opponent = new() { "[1] CPU", "[2] Local Friend", "[3] Online Opponent" }; int opponentSelect = -1;
-
             switch (gameModeSelect)
             {
                 case 1: break;
@@ -89,15 +74,25 @@ namespace diceThroneAR
                 case 5: break;
                 case 6: break;
                 case 7: break;
-            }
-        }
-
-        public static void gameMatchMaking(Character p1, Character p2)
+            } }
+        public static void gameMatchMaking(Character p1, Character p2)          //Matchmaking system for 2+ characters
+        {   Battleground.rollForFirst(p1, p2);
+            shuffleCards(p1, p1.cards.Count);
+            shuffleCards(p2, p2.cards.Count);
+            Console.ReadKey();
+            Console.WriteLine("Here are player 1's drawn cards: " + p1.name.ToString() + "\n");
+            int c = 0; while (c < 4) { p1.cards[c].ShowDetails(); p1.cards[c].Drawn = true; c++; }
+            Console.WriteLine("Here are player 2's drawn cards: " + p2.name.ToString() + "\n");
+            int d = 0; while (d < 4) { p2.cards[d].ShowDetails(); p2.cards[c].Drawn = true; d++; }
+            Console.ReadKey(); }
+        public static void mainPhase(Character activePlayer)
         {
-            Battleground.rollForFirst(p1, p2);
+            foreach (Cards card in activePlayer.cards)
+                if (card.Drawn == true) if (card.Type == 1 || card.Type == 4) card.isPlayable = true;
+            Console.WriteLine("Player, please play a Main Phase Card or Hero Upgrade Card or press 4 to continue.");
+
         }
     }
-
     class Character
     {
         public bool winFirstRoll { get; set; } = false;
@@ -122,14 +117,10 @@ namespace diceThroneAR
                 else Console.Write($"{statusEffects[b].name}, Quantity ({statusEffects[b].quantity}), Type: {statusEffects[b].status}\n");
             }
             Console.Write($"\"I have {cards.Count} cards total.\"\n\n");
-            /*int c = 0;
-            foreach (Cards a in cards)
-            {
-                cards[c].ShowDetails(); c++;
-            }*/
+            foreach (Cards a in cards) a.ShowDetails();
+            //int c = 0; while (c < 5) { cards[c].ShowDetails(); c++; //Shows just five out of x amount of cards.}
         }
     }
-
     class CharacterInfo
     {
         public static string[] names = {
@@ -186,7 +177,7 @@ namespace diceThroneAR
             {"BETTER D!","0","2","5","A chosen player may perform an additional Roll Attempt of up to five dice during their Defensive Roll Phase."},
             {"TIP IT!","1","3", "1","Increase or decrease any die by the value of 1 (a value of 1 cannot be decreased and a value of 6 cannot be increased)."},
             {"BUH, BYE!","2","3","1","Remove a status effect token from a chosen player."},
-            {"DOUBLE UP!","1","3","2","Draw 2 cards."}, {"TRIPLE UP!","2","3", "3", "Draw 3 cards."}, {"Getting Paid!","1","3","2","false"} }, //Stock Cards
+            {"DOUBLE UP!","1","3","2","Draw 2 cards."}, {"TRIPLE UP!","2","3", "3", "Draw 3 cards."}, {"Getting Paid!","1","3","2","Gain 2 CP."} }, //Stock Cards
             {{null, null, null, null, null}, {null, null, null, null, null}, {null, null, null, null, null}, {null, null, null, null, null},
             {null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null},
             {null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null},
@@ -272,7 +263,7 @@ namespace diceThroneAR
             {"Maneuver II/Reconnaissance (adds)","2","4","5","4 [MEDAL] Gain 5 Tactical Advantage.  Inflict Constrict.  Then deal 5 undefendable dmg. | 3 [MEDAL] Gain 5 Tactical Advantage."},
             {"Counter Measures II","3","4","0", "DEFENSIVE ROLL 5 DICE For every 2 [SABER], deal 1 dmg.  Prevent 1 x [FLAG] dmg.  Gain 1 x [MEDAL] Tactical Advantage."},
             {"Counter Measures III","5","4","0", "DEFENSIVE ROLL 5 DICE For every 2 [SABER], deal 2 dmg.  Prevent 1 x [FLAG] dmg.  Gain 1 x [MEDAL] Tactical Advantage."},
-            {null, null, null, null, null}, {null, null, null, null, null}, {null, null, null, null, null}, {null, null, null, null, null}}, //Tacticianf
+            {null, null, null, null, null}, {null, null, null, null, null}, {null, null, null, null, null}, {null, null, null, null, null}}, //Tactician
             {{"CULTIVATE!","3","1","3","Gain 3 Spirits."},
             {"HARVEST!","0","1","3","Remove up to 3 Spirits and gain 1 CP per Spirit removed.  If at least 2 were removed, up to two chosen players gain Wellspring."},
             {"DOWN POUR!","2","1","0","You may grow all existing Spirits once each (in any order)."},
@@ -456,7 +447,6 @@ namespace diceThroneAR
             return generatedDeck;
         }
     }
-
     class StatusEffect
     {
         public string name, status;
@@ -464,18 +454,15 @@ namespace diceThroneAR
         public bool isPersistent = false;
         public StatusEffect(string n, int q, string s) { this.name = n; this.quantity = q; this.status = s; }
     }
-
     class Moves
     {
         public string name, diceCombo;
         public bool isInvisibleLocked = true;
     }
-
     class Dice
     {
         public static int[] sides = { 1, 2, 3, 4, 5, 6 };
     }
-
     class GameBoard
     {
         Moves[] moves = new Moves[9];
@@ -483,5 +470,4 @@ namespace diceThroneAR
         public bool haveStatusEffects = false;
     }
 }
-
 /*EST. COMPLETION == Nov. 21st, 2022 */
