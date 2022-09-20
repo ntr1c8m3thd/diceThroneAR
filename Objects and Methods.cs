@@ -32,7 +32,8 @@ namespace diceThroneAR
             Thread.Sleep(555);
             return charSelect; }
         public static void gameModeSelect()                                     //Prompts Player 1 to choose from 7 gamemode styles, generating a match based off of desired opponents
-        {   ArrayList gameMode = new()
+        {   Console.WriteLine("°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`");
+            ArrayList gameMode = new()
             {
                 "[1] King of the Hill", "[2] 1v1", "[3] 2v2",
                 "[4] 3v3", "[5] 4v4", "[6] 2v2v2", "[7] 2v2v2v2"
@@ -76,27 +77,21 @@ namespace diceThroneAR
                 case 7: break;
             } }
         public static void gameMatchMaking(Character p1, Character p2)          //Matchmaking system for 2+ characters
-        {   Battleground.rollForFirst(p1, p2);
-            shuffleCards(p1, p1.cards.Count);
-            shuffleCards(p2, p2.cards.Count);
-            Console.ReadKey();
+        {   shuffleCards(p1, p1.cards.Count); shuffleCards(p2, p2.cards.Count);
+            Console.WriteLine("°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`\n");
+            Console.WriteLine("Press enter to shuffle the cards and draw your starting hand (4 cards)!\n"); Console.ReadKey();
             Console.WriteLine("Here are player 1's drawn cards: " + p1.name.ToString() + "\n");
-            int c = 0; while (c < 4) { p1.cards[c].ShowDetails(); p1.cards[c].Drawn = true; c++; }
+            int c = 0; while (c < 4) { Console.Write(c + 1 + ": "); p1.cards[c].ShowDetails(); p1.cards[c].Drawn = true; c++; }
             Console.WriteLine("Here are player 2's drawn cards: " + p2.name.ToString() + "\n");
-            int d = 0; while (d < 4) { p2.cards[d].ShowDetails(); p2.cards[c].Drawn = true; d++; }
-            Console.ReadKey(); }
-        public static void mainPhase(Character activePlayer)
-        {
-            foreach (Cards card in activePlayer.cards)
-                if (card.Drawn == true) if (card.Type == 1 || card.Type == 4) card.isPlayable = true;
-            Console.WriteLine("Player, please play a Main Phase Card or Hero Upgrade Card or press 4 to continue.");
+            int d = 0; while (d < 4) { Console.Write(d + 1 + ": "); p2.cards[d].ShowDetails(); p2.cards[d].Drawn = true; d++; }
+            Console.ReadKey();
+            Battleground.playMainPhaseHand(rollForFirst(p1, p2)); }
 
-        }
     }
     class Character
     {
         public bool winFirstRoll { get; set; } = false;
-        public int cP = 2, hP = 50;
+        public int cP = 2, hP = 50, cardsPlayed = 0;
         public string team, name;
         public string introQuip;
         public List<StatusEffect> statusEffects = new List<StatusEffect>();
@@ -117,7 +112,8 @@ namespace diceThroneAR
                 else Console.Write($"{statusEffects[b].name}, Quantity ({statusEffects[b].quantity}), Type: {statusEffects[b].status}\n");
             }
             Console.Write($"\"I have {cards.Count} cards total.\"\n\n");
-            foreach (Cards a in cards) a.ShowDetails();
+            int cardCounter = 1;
+            foreach (Cards a in cards) { Console.Write(cardCounter + ": "); a.ShowDetails(); cardCounter++; }
             //int c = 0; while (c < 5) { cards[c].ShowDetails(); c++; //Shows just five out of x amount of cards.}
         }
     }
@@ -163,7 +159,7 @@ namespace diceThroneAR
             { {"Barbed Vine","2", "Negative"}, {"Crit", "2", "Positive"}, {"Protect", "2", "Positive"}, {"Accuracy", "2", "Positive"}, {"Blessing Of Divinity", "1", "Unique"}, {null, null, null}, {null, null, null}, {null, null, null}, {null, null, null} }, //Treeant
             { {"Blood Power","5", "Positive"}, {"Crit", "2", "Positive"}, {"Protect", "2", "Positive"}, {"Accuracy", "2", "Positive"}, {"Blessing Of Divinity", "1", "Unique"}, {null, null, null}, {null, null, null}, {null, null, null}, {null, null, null} } //Vampire Lord
         };
-                                                                         // SET TO FINISH AUG. 22nd at latest! **********************TIMELINE***********************
+                                                                                // SET TO FINISH SEP. 22nd at latest! **********************TIMELINE***********************
         public static string[,,] cards = new string[,,]
         {
             {{"TRANSFERENCE","2","1","1","Transfer 1 status effect token from a chosen player to another chosen player."},
@@ -296,8 +292,7 @@ namespace diceThroneAR
             {"IMMORTAL FLESH II","2","4","0","DEFENSIVE ROLL 4 DICE On 2 [CLAWS], inflict Bleed.  On 2 [GAZE], gain Blood Power.  Steal 1 Health per 1 [DROPLET] rolled."},
             {null, null, null, null, null}, {null, null, null, null, null}, {null, null, null, null, null}}, //Vampire Lord
         };
-                                                                         // SET TO FINISH AUG. 24th at latest! **********************TIMELINE***********************
-
+                                                                                // SET TO FINISH SEP. 24th at latest! **********************TIMELINE***********************
         public static string[,,] moves = new string[,,]
          {
             { {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null},
@@ -376,7 +371,7 @@ namespace diceThroneAR
               { "IMMORTAL FLESH","2 [CLAWS]","1 INFLICT BLEED","2 [GAZE]","1 GAIN BLOOD POWER","X [DROPLET]","X DMG X HEAL",null},
               { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null} } // 8 moves // Vampire Lord
         };
-                                                                         // SET TO FINISH AUG. 21ST at latest! **********************TIMELINE***********************
+                                                                                // SET TO FINISH SEP. 21ST at latest! **********************TIMELINE***********************
         public static string[,] dice = new string[,] 
         {
             {"1", "WRENCH", "2", "WRENCH", "3", "WRENCH", "4", "GEAR", "5", "GEAR", "6", "BOLT"},           //Artificer
@@ -411,9 +406,9 @@ namespace diceThroneAR
         public static List<Cards> generateDeck(int charSelect)
         {
             int i = 0; List<Cards> generatedDeck = new List<Cards>(); charSelect++;
-            while (cards[charSelect, i, 0] != null)
+            while (cards[charSelect, i, 0] != null)                     // ALL CARDS be it MOVES / PLAYABLE CARDS HAVE A TITLE (0) == charSelect, i, 0
             {
-                switch (cards[charSelect, i, 2])
+                switch (cards[charSelect, i, 2])                        // the TWO references the CARD TYPE
                 {
                     case "1":
                         Cards card = new MainPhaseCard(int.Parse(cards[charSelect, i, 1]), cards[charSelect, i, 0], cards[charSelect, i, 4]);
@@ -431,7 +426,7 @@ namespace diceThroneAR
             }
             i = 0; while (i < 18) 
             {
-                switch (cards[0, i, 2])
+                switch (cards[0, i, 2])                                 // this generates the stock deck
                 {
                     case "1":
                         Cards card = new MainPhaseCard(int.Parse(cards[0, i, 1]), cards[0, i, 0], cards[0, i, 4]);
@@ -463,7 +458,7 @@ namespace diceThroneAR
     {
         public static int[] sides = { 1, 2, 3, 4, 5, 6 };
     }
-    class GameBoard
+    class GameBoard                                                             //Moves will be cards == Moves type 5, Passive Ability type 6, Defensive type 7
     {
         Moves[] moves = new Moves[9];
         Dice[] dice = new Dice[5];

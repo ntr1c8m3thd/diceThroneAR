@@ -6,27 +6,9 @@ namespace diceThroneAR
     class Battleground                                                          //WHAT IS BATTLEGROUND? -- Functions that help the GameFlow class.
     {
         public static void printEachChar(string word)
-        { for (int counter = 0; counter < word.Length; counter++)
-            { Console.Write(word[counter].ToString()); Thread.Sleep(10); } }
-        public static void rollForFirst(Character p1, Character p2) //TODO: Update parameters to take List<Characters> and add TIEBREAKER protocol
         {
-            int player = 1, highestRoll = 0, whoRolledHighest = 0;
-            while (GameFlow.numberOfPlayers != 0)
-            {
-                Console.WriteLine($"\nPlaya {player}: Press enter to roll:");
-                Console.ReadLine();
-                Random roll = new Random(); int rollResult = roll.Next(0, 7);
-                Console.WriteLine($"Playa {player}: You rolled a got damn {rollResult}!");
-                if (rollResult > highestRoll) { highestRoll = rollResult; whoRolledHighest = player; };
-                player++; GameFlow.numberOfPlayers--; 
-            };
-            switch (whoRolledHighest)
-            {
-                case 1: p1.winFirstRoll = true; break;
-                case 2: p2.winFirstRoll = true; break;
-            }
-            if (p1.winFirstRoll == true) Console.WriteLine($"\nPlayer 1, {p1.name}, rolls first!");
-                else if (p2.winFirstRoll == true) Console.WriteLine($"\nPlayer 2, {p2.name}, rolls first!\n");
+            for (int counter = 0; counter < word.Length; counter++)
+            { Console.Write(word[counter].ToString()); Thread.Sleep(10); }
         }
         public static void shuffleCards(Character p, int deckSize)
         {
@@ -41,7 +23,103 @@ namespace diceThroneAR
                 p.cards[j] = deck;
             }
         }
+        public static Character rollForFirst(Character p1, Character p2)        //TODO: Update parameters to take List<Characters> and add TIEBREAKER protocol
+        {
+            int player = 1, highestRoll = 0, whoRolledHighest = 0;
+            Console.WriteLine("/**************************************4DBUGG1NG************************************************/");
+            while (GameFlow.numberOfPlayers != 0)
+            {
+                Console.WriteLine($"\nPlayer {player}: Press enter to roll:");
+                Console.ReadLine();
+                Random roll = new Random(); int rollResult = roll.Next(1, 7);
+                Console.WriteLine($"Player {player}: You rolled a got damn {rollResult}!");
+                if (rollResult > highestRoll) { highestRoll = rollResult; whoRolledHighest = player; };
+                player++; GameFlow.numberOfPlayers--;
+            };
+            switch (whoRolledHighest)
+            {
+                case 1: p1.winFirstRoll = true; break;
+                case 2: p2.winFirstRoll = true; break;
+            }
+            if (p1.winFirstRoll == true) { Console.WriteLine($"\nPlayer {p1.team}, {p1.name}, rolls first!\n"); return p1; }
+            else { Console.WriteLine($"\nPlayer {p2.team}, {p2.name}, rolls first!\n"); return p2; }
+        }
+        public static void playMainPhaseHand(Character activePlayer)            //Control system that check's boolean isPlayable for each phase and either plays card or denies play.
+        {
+            foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 1 || card.Type == 4) card.isPlayable = true;
+            //sets the boolean isPlayable to true if either Main Phase or Hero Upgrade card.
+            int choice = 99;
+            do                                                                  //TODO: Modify to only allow 1-(number of cards in hand)
+            {                                                                   //then display that number as the range of acceptible inputs. 
+                Console.WriteLine($"Player {activePlayer.team}, {activePlayer.name} please enter the number of the card you wish to play.\n" +
+                    "Allowed cards in this phase: Main Phase / Hero Upgrade / Instant Action Cards.\n" +
+                    "(Press 0 to view your current hand or -1 to advance to the next phase.)\n"); ;
+                if (!int.TryParse(Console.ReadLine(), out int num))
+                    Console.WriteLine("Invalid value entered, try again.");
+                else if ((num < -1 || num > 10)) Console.WriteLine("Value must be within -1 and 10");
+                else
+                {
+                    if (num == 0)
+                    {
+                        int cardCounter = 1; foreach (Cards card in activePlayer.cards) if (card.Drawn == true)
+                            {
+                                Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++;
+                            }
+                    }
+                    else if (num > 0 && num < 11)
+                    {
+                        if (activePlayer.cards[num - 1 + activePlayer.cardsPlayed].isPlayable != true) Console.WriteLine("This card is not currently playable.");
+                        else
+                        {
+                            Console.WriteLine($"You played {activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Name}");
+                            activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Action(); activePlayer.cardsPlayed++;
+                        }
+                    }
+                    else if (num == -1) { Console.WriteLine("Advancing to next phase..."); choice = -1; }
+                }
+            }
+            while (choice != -1);
+            foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 1 || card.Type == 4) card.isPlayable = false; //flips bool isPlayable to False at end of phase
+        }
+        public static void playRollPhaseHand(Character activePlayer)
+        {
+            foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 2) card.isPlayable = true;
+            //sets the boolean isPlayable to true if Roll Phase card.
+            int choice = 99;
+            do                                                                  //TODO: Modify to only allow 1-(number of cards in hand)
+            {                                                                   //then display that number as the range of acceptible inputs. 
+                Console.WriteLine($"Player {activePlayer.team}, {activePlayer.name} please enter the number of the card you wish to play.\n" +
+                    "Allowed cards in this phase: Roll Phase / Instant Action Cards.\n" +
+                    "(Press 0 to view your current hand or -1 to advance to the next phase.)\n"); ;
+                if (!int.TryParse(Console.ReadLine(), out int num))
+                    Console.WriteLine("Invalid value entered, try again.");
+                else if ((num < -1 || num > 10)) Console.WriteLine("Value must be within -1 and 10");
+                else
+                {
+                    if (num == 0)
+                    {
+                        int cardCounter = 1; foreach (Cards card in activePlayer.cards) if (card.Drawn == true)
+                            {
+                                Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++;
+                            }
+                    }
+                    else if (num > 0 && num < 11)
+                    {
+                        if (activePlayer.cards[num - 1 + activePlayer.cardsPlayed].isPlayable != true) Console.WriteLine("This card is not currently playable.");
+                        else
+                        {
+                            Console.WriteLine($"You played {activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Name}");
+                            activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Action(); activePlayer.cardsPlayed++;
+                        }
+                    }
+                    else if (num == -1) { Console.WriteLine("Advancing to next phase..."); choice = -1; }
+                }
+            }
+            while (choice != -1);
+            foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 2) card.isPlayable = false; //flips bool isPlayable to False at end of phase
+        }
     }
+
     class Cards
     {
         public int CPCost { get; set; }
@@ -49,30 +127,28 @@ namespace diceThroneAR
         public string Desc { get; set; }
         public int Type { get; set; }
         public bool Drawn { get; set; } = false;
+        public bool Discarded { get; set; } = false;
         public bool isPlayable { get; set; } = false;
-
         public Cards(int cpcost, string name, string desc)
         {
             this.CPCost = cpcost; this.Name = name.ToUpper(); this.Desc = desc;
         }
-
         public virtual void ShowDetails()
         {
             Console.WriteLine(Name + " CP Cost: " + CPCost + "\nDescription: " + Desc );
         }
-
-        public void Action() { }
+        public void Action() { Drawn = false; Discarded = true; }
     }
     class MainPhaseCard : Cards
     {
         new public string Type = "Main Phase Card"; // 1
 
         public MainPhaseCard(int cpcost, string name, string desc) : base(cpcost, name, desc)
-        { }
+        { base.Type = 1; }
         public override void ShowDetails()
         {
-            Console.WriteLine(Name + " CP Cost: " + CPCost + "\n" +
-                "Type: " + Type + " Description: " + Desc + "\n");
+            Console.WriteLine(Name + " CP Cost: " + CPCost + " || Is Playable? = " + isPlayable + "\n" +
+                "Type: " + Type + " || Description: " + Desc + "\n");
         }
     }
     class RollPhaseCard : Cards
@@ -80,23 +156,24 @@ namespace diceThroneAR
         new public string Type = "Roll Phase Card"; // 2
 
         public RollPhaseCard(int cpcost, string name, string desc) : base(cpcost, name, desc)
-        { }
+        { base.Type = 2; }
         public override void ShowDetails()
         {
-            Console.WriteLine(Name + " CP Cost: " + CPCost + "\n" +
-                "Type: " + Type + " Description: " + Desc + "\n");
+            Console.WriteLine(Name + " CP Cost: " + CPCost + " || Is Playable? = " + isPlayable + "\n" +
+                "Type: " + Type + " || Description: " + Desc + "\n");
         }
     }
     class InstantActionCard : Cards
     {
         new public string Type = "Instant Action Card"; //3
+        
 
         public InstantActionCard(int cpcost, string name, string desc) : base(cpcost, name, desc)
-        { }
+        { base.Type = 3; isPlayable = true; }
         public override void ShowDetails()
         {
-            Console.WriteLine(Name + " CP Cost: " + CPCost + "\n" +
-                "Type: " + Type + " Description: " + Desc + "\n");
+            Console.WriteLine(Name + " CP Cost: " + CPCost + " || Is Playable? = " + isPlayable + "\n" +
+                "Type: " + Type + " || Description: " + Desc + "\n");
         }
     }
     class HeroUpgradeCard : Cards
@@ -104,11 +181,11 @@ namespace diceThroneAR
         new public string Type = "Hero Upgrade Card"; //4
 
         public HeroUpgradeCard(int cpcost, string name, string desc) : base(cpcost, name, desc)
-        { }
+        { base.Type = 4; }
         public override void ShowDetails()
         {
-            Console.WriteLine(Name + " CP Cost: " + CPCost + "\n" +
-                "Type: " + Type + " Description: " + Desc + "\n");
+            Console.WriteLine(Name + " CP Cost: " + CPCost + " || Is Playable? = " + isPlayable + "\n" +
+                "Type: " + Type + " || Description: " + Desc + "\n");
         }
     }
 }

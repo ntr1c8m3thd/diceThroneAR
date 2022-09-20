@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Threading; //using Superpowers;
+﻿using System; using System.Collections; using System.Threading; //using Superpowers;
 
 namespace diceThroneAR
 {
@@ -15,7 +13,6 @@ namespace diceThroneAR
             player1.IntroCharacter();
             GameFlow.gameModeSelect();
             GameFlow.gameMatchMaking(player1, GameFlow.player2);
-            GameFlow.mainPhase(player1);
             //Battleground.jaggedLesson(); Battleground.testGetAverage();
         }
     }
