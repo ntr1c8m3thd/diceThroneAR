@@ -447,7 +447,6 @@ namespace diceThroneAR
     {
         public static int[] sides = { 1, 2, 3, 4, 5, 6 };
     }
-
     //Moves will be cards == Moves type 5, Passive Ability type 6, Defensive type 7
     class GameBoard
     {
