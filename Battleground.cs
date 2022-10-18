@@ -3,13 +3,16 @@ using System.Text; using System.Threading.Tasks; using System.Threading;
 
 namespace diceThroneAR
 {
-    class Battleground                                                          //WHAT IS BATTLEGROUND? -- Functions that help the GameFlow class.
+    //BATTLEGROUND -- Functions that help the GameFlow class.
+    class Battleground                                                          
     {
+        public static Character currentPlayer;
         public static void printEachChar(string word)
         {
             for (int counter = 0; counter < word.Length; counter++)
             { Console.Write(word[counter].ToString()); Thread.Sleep(10); }
         }
+
         public static void shuffleCards(Character p, int deckSize)
         {
             //Fisher-Yates shuffle algorithm
@@ -32,20 +35,23 @@ namespace diceThroneAR
                 Console.WriteLine($"\nPlayer {player}: Press enter to roll:");
                 Console.ReadLine();
                 Random roll = new Random(); int rollResult = roll.Next(1, 7);
-                Console.WriteLine($"Player {player}: You rolled a got damn {rollResult}!");
+                Console.WriteLine($"Player {player}: You rolled a {rollResult}!");
                 if (rollResult > highestRoll) { highestRoll = rollResult; whoRolledHighest = player; };
                 player++; GameFlow.numberOfPlayers--;
             };
             switch (whoRolledHighest)
             {
-                case 1: p1.winFirstRoll = true; break;
-                case 2: p2.winFirstRoll = true; break;
+                case 1: p1.WinFirstRoll = true; break;
+                case 2: p2.WinFirstRoll = true; break;
             }
-            if (p1.winFirstRoll == true) { Console.WriteLine($"\nPlayer {p1.team}, {p1.name}, rolls first!\n"); return p1; }
+            if (p1.WinFirstRoll == true) { Console.WriteLine($"\nPlayer {p1.team}, {p1.name}, rolls first!\n"); return p1; }
             else { Console.WriteLine($"\nPlayer {p2.team}, {p2.name}, rolls first!\n"); return p2; }
         }
-        public static void playMainPhaseHand(Character activePlayer)            //Control system that check's boolean isPlayable for each phase and either plays card or denies play.
+
+        //playMainPhaseHand(Character activePlayer) allows for a Main Phase or Hero Upgrade card to be played.
+        public static void playMainPhaseHand(Character activePlayer)
         {
+            currentPlayer = activePlayer;
             foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 1 || card.Type == 4) card.isPlayable = true;
             //sets the boolean isPlayable to true if either Main Phase or Hero Upgrade card.
             int choice = 99;
@@ -83,43 +89,193 @@ namespace diceThroneAR
         }
         public static void playRollPhaseHand(Character activePlayer)
         {
+            foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 2) card.isPlayable = true; //sets the boolean isPlayable to true if Roll Phase card.
+            int choice = -2, choice2 = -2, choice3 = -2, choice4 = -2; Random roll = new Random(); int[] RollResults = new int[5];
+            string RR = $"You rolled 1: {RollResults[0]} || 2: {RollResults[1]} || 3: {RollResults[2]} || 4: {RollResults[3]} || and 5: {RollResults[4]}!"; 
+            Console.WriteLine("/**************************************4DBUGG1NG************************************************/");
+
+            do //==================================================================================================================================FIRST DO
+            {
+                Console.WriteLine($"Player {activePlayer.team}, {activePlayer.name} please enter the number of the card you wish to play.\n" +
+                    "Allowed cards in this phase: Roll Phase / Instant Action Cards.\n" +
+                    "(Enter 0 to view your current hand or enter 99 to roll your first roll attempt.)\n"); ;
+                if (!int.TryParse(Console.ReadLine(), out int num)) Console.WriteLine("Invalid value entered, try again.");
+                else if (num == 99)
+                {
+                    for (int x = 0; x < 5; x++) { RollResults[x] = roll.Next(1, 7); }
+                    Console.WriteLine(RR); //TODO: correlate the number rolled with the type of item on the character's di
+                    Console.WriteLine("Please enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or 99 to reroll some or all of your dice.");
+
+                    do //==========================================================================================================================THEN DO
+                    {
+                        if (!int.TryParse(Console.ReadLine(), out int num2)) Console.WriteLine("Invalid value entered, try again.");
+                        else if (num2 == 99) //this block  allows the player to pick 1-5 di(ce) and reroll
+                        {
+                            Console.WriteLine("Enter which di(ce) you wish to reroll. ie. 1 for the first di / 3 for the third di / 235 for  dice 2, 3 and 5.");
+                            if (!int.TryParse(Console.ReadLine(), out int num3)) Console.WriteLine("Invalid value entered, try again.");
+                            else if (num3 <= 0 || num3 > 12345) Console.WriteLine("Value must be within 1 and 12345");
+                            else
+                            {
+                                switch (num3)
+                                {
+                                    case 1: RollResults[0] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    case 12: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    case 13: RollResults[0] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    case 14: RollResults[0] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    case 15: RollResults[0] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    case 123: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    case 124: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    case 125: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    case 1234: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    case 1235: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    case 12345: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    case 134: RollResults[0] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    case 1345: RollResults[0] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    case 145: RollResults[0] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); Console.WriteLine(RR); break;
+                                    //do 2-2345, 3-345, 4-5, 5 later
+                                }
+                            }
+                        }
+                        else if (num2 == 0)
+                        {
+                            int cardCounter = 1; foreach (Cards card in activePlayer.cards) if (card.Drawn == true) { Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++; }
+                        }
+                        else if (num2 > 0 && num2 < 11)
+                        {
+                            if (activePlayer.cards[num - 1 + activePlayer.cardsPlayed].isPlayable != true) Console.WriteLine("This card is not currently playable.");
+                            else { Console.WriteLine($"You played {activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Name}"); activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Action(); activePlayer.cardsPlayed++; }
+                        }
+                        else if ((num2 < 25 || num2 > 35)) Console.WriteLine("Value must be within 25 and 35");
+                        else
+                        {
+                            switch (num2)
+                            {
+                                case 25: /* INSERT FUNCTION TO ACTIVATE MOVE */ choice2 = -1; break;
+                                case 26: /* INSERT FUNCTION TO ACTIVATE MOVE */ choice2 = -1; break;
+                                case 27: /* INSERT FUNCTION TO ACTIVATE MOVE */ choice2 = -1; break;
+                                case 28: /* INSERT FUNCTION TO ACTIVATE MOVE */ choice2 = -1; break;
+                                case 29: /* INSERT FUNCTION TO ACTIVATE MOVE */ choice2 = -1; break;
+                                case 30: /* INSERT FUNCTION TO ACTIVATE MOVE */ choice2 = -1; break;
+                                case 31: /* INSERT FUNCTION TO ACTIVATE MOVE */ choice2 = -1; break;
+                                case 32: /* INSERT FUNCTION TO ACTIVATE MOVE */ choice2 = -1; break;
+                                case 33: /* INSERT FUNCTION TO ACTIVATE MOVE */ choice2 = -1; break;
+                                case 34: /* INSERT FUNCTION TO ACTIVATE MOVE */ choice2 = -1; break;
+                                case 35: /* INSERT FUNCTION TO ACTIVATE MOVE */ choice2 = -1; break;
+                            }
+                        }
+                    }
+                    while (choice2 != -1);
+
+                 }
+                else if (num == 0)
+                {
+                    int cardCounter = 1; foreach (Cards card in activePlayer.cards) if (card.Drawn == true) { Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++; }
+                }
+                else if (num > 0 && num < 11)
+                {
+                    if (activePlayer.cards[num - 1 + activePlayer.cardsPlayed].isPlayable != true) Console.WriteLine("This card is not currently playable.");
+                    else { Console.WriteLine($"You played {activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Name}"); activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Action(); activePlayer.cardsPlayed++; }
+                }
+                else if ((num < -1 || num > 10)) Console.WriteLine("Value must be within 0 and 10");
+                else if (num == -1) { Console.WriteLine("Advancing to next phase..."); choice = -1; }
+            }
+            while (choice != -1);
+            foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 2) card.isPlayable = false; //flips bool isPlayable to False at end of phase
+        }
+        
+        /* 1st rendition
+        public static void playRollPhaseHand(Character activePlayer)
+        {
             foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 2) card.isPlayable = true;
             //sets the boolean isPlayable to true if Roll Phase card.
-            int choice = 99;
+            int choice = -2; Random roll = new Random();
+            int[] RollResults = new int[5];
             do                                                                  //TODO: Modify to only allow 1-(number of cards in hand)
             {                                                                   //then display that number as the range of acceptible inputs. 
                 Console.WriteLine($"Player {activePlayer.team}, {activePlayer.name} please enter the number of the card you wish to play.\n" +
                     "Allowed cards in this phase: Roll Phase / Instant Action Cards.\n" +
-                    "(Press 0 to view your current hand or -1 to advance to the next phase.)\n"); ;
+                    "(Enter 0 to view your current hand or enter 99 to roll your first roll attempt.)\n"); ;
                 if (!int.TryParse(Console.ReadLine(), out int num))
                     Console.WriteLine("Invalid value entered, try again.");
-                else if ((num < -1 || num > 10)) Console.WriteLine("Value must be within -1 and 10");
-                else
+                else if (num == 99)
                 {
-                    if (num == 0)
+                    for (int x = 0; x < 5; x++) { RollResults[x] = roll.Next(1, 7); }
+                    Console.WriteLine($"You rolled 1: {RollResults[0]} || 2: {RollResults[1]} || 3: {RollResults[2]} || 4: {RollResults[3]} || and 5: {RollResults[4]}!"); //TODO: correlate the number rolled with the type of item on the character's di
+                    Console.WriteLine("Please enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or 99 to reroll some or all of your dice.");
+                    if (!int.TryParse(Console.ReadLine(), out int num2))
+                        Console.WriteLine("Invalid value entered, try again.");
+                    else if (num2 == 99)
+                    {
+                        //this block  allows the player to pick 1-5 dice and reroll
+                        Console.WriteLine("Enter which di(ce) you wish to reroll. ie. 35 if dice 3 and 5, 124 if dice 1, 2 and 4.");
+                        if (!int.TryParse(Console.ReadLine(), out int num3))
+                            Console.WriteLine("Invalid value entered, try again.");
+                        else if (num3 <= 0 || num3 > 12345) Console.WriteLine("Value must be within 1 and 12345");
+                        else
+                        {
+                            switch (num3)
+                            {
+                                case 1: RollResults[0] = roll.Next(1, 7); Console.WriteLine($"You now have 1: {RollResults[0]} || 2: {RollResults[1]} || 3: {RollResults[2]} || 4: {RollResults[3]} || and 5: {RollResults[4]}!"); break;
+                                case 12: break;
+                                case 13: break;
+                                case 14: break;
+                                case 15: break;
+                                case 123: break;
+                                case 124: break;
+                                case 125: break;
+                                case 1234: break;
+                                case 1235: break;
+                                case 12345: break;
+                                case 134: break;
+                                case 1345: break;
+                                case 145: break;
+                            }
+                        }
+                    }
+                    else if (num2 == 0)
                     {
                         int cardCounter = 1; foreach (Cards card in activePlayer.cards) if (card.Drawn == true)
                             {
                                 Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++;
                             }
                     }
-                    else if (num > 0 && num < 11)
+                    else if (num2 > 0 && num2 < 11)
                     {
                         if (activePlayer.cards[num - 1 + activePlayer.cardsPlayed].isPlayable != true) Console.WriteLine("This card is not currently playable.");
-                        else
+                        else { Console.WriteLine($"You played {activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Name}"); activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Action(); activePlayer.cardsPlayed++; }
+                    }
+                    else if ((num2 < 25 || num2 > 35)) Console.WriteLine("Value must be within 25 and 35");
+                    else
+                    {
+                        switch (num2)
                         {
-                            Console.WriteLine($"You played {activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Name}");
-                            activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Action(); activePlayer.cardsPlayed++;
+                            case 25: break;
+                            case 26: break;
+                            case 27: break;
+                            case 28: break;
+                            case 29: break;
+                            case 30: break;
+                            case 31: break;
+                            case 32: break;
+                            case 33: break;
+                            case 34: break;
+                            case 35: break;
                         }
                     }
-                    else if (num == -1) { Console.WriteLine("Advancing to next phase..."); choice = -1; }
                 }
+                else if ((num < -1 || num > 10)) Console.WriteLine("Value must be within 0 and 10");
+
+
+                //TODO: if 99 is entered, prompt user to chose which dice (2-3-4) and reroll
+                //      then loop to offer a declaration of move orrr allow for final reroll
+                //      must also allow user to play Roll Phase or IA card.
+                //      fuck this shit is no cake walk lol
             }
             while (choice != -1);
             foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 2) card.isPlayable = false; //flips bool isPlayable to False at end of phase
-        }
+        }*/
     }
-
+    //-----------------------------------------------------------------------------------------------------------------------------------------------
     class Cards
     {
         public int CPCost { get; set; }
@@ -189,73 +345,3 @@ namespace diceThroneAR
         }
     }
 }
-
-/*public static void jaggedLesson() //Creating an Array within An Array
-{
-    //---JAGGED ARRAYS-- -
-    int[][] jaggedArray = new int[3][];
-    jaggedArray[0] = new int[3]; // or new int[] {value1, value2, value3};
-    jaggedArray[1] = new int[2]; // or new int[] {value1, value2};
-    jaggedArray[2] = new int[1]; // or new int[] {value1};
-
-    //\/ Alternative way /\/
-
-    int value1 = 5, value2 = 10, value3 = 15;
-    int[][] jaggedArray2 = new int[][] {
-                new int[] {value1, value2, value3},
-                new int[] {value1, value2},
-                new int[] {value1}
-            };
-
-    Console.WriteLine("The Value in the middle of the first entry is {0}", jaggedArray2[0][2]);
-    int x = 0, y = 0; foreach (int[] test in jaggedArray2)
-    {
-        Console.WriteLine("\nElement ({0})", x);
-        foreach (int boo in test)
-        {
-            Console.WriteLine("At Element ({0}, {1}): {2} ", x, y, boo); y++;
-        }
-        x++; y = 0;
-    }
-    Console.WriteLine();
-
-    //Teacher's way ((SUPERIOR))
-    for (int i = 0; i < jaggedArray2.Length; i++)
-    {
-        Console.WriteLine("\nElement {0}", i);
-        for (int j = 0; j < jaggedArray2[i].Length; j++) Console.WriteLine("At Element {0}, {1}: {2} ", i, j, jaggedArray2[i][j]);
-    }
-
-    string[][] friendsAndFamily = new string[][]
-    {
-                new string[] {"Andre", "Cameron", "Sister"},
-                new string[] {"Zachary", "Caitlyn", "Milli"},
-                new string[] {"Michael", "Colleen", "Dan" }
-    };
-
-    for (int i = 0; i < friendsAndFamily.Length; i++)
-    {
-        Console.Write("\nFamily Members of {0}'s are ", friendsAndFamily[i][0]);
-        for (int j = 1; j < 2; j++) Console.WriteLine("{0} and {1}. Pleasure to meet you!", friendsAndFamily[i][j], friendsAndFamily[i][j + 1]);
-    }
-}
-
-public static double GetAverage(int[] gradesArray) //Convenient method using arrays
-{
-    int size = gradesArray.Length;
-    double average;
-    int sum = 0;
-
-    for (int i = 0; i < size; i++)
-        sum += gradesArray[i];
-    average = (double)sum / size;
-    return average;
-}
-
-public static void testGetAverage()
-{
-    int[] studentsGrades = new int[] { 15, 13, 8, 12, 6, 16 };
-    double averageResult = GetAverage(studentsGrades);
-    Console.WriteLine("The average is: {0}", averageResult);
-    Console.ReadKey();
-}*/

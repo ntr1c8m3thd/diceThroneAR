@@ -4,40 +4,27 @@ using System.Linq; using System.Text; using System.Threading; using System.Threa
 namespace diceThroneAR
 {
     class GameFlow {
-        public static int numberOfPlayers = 1;
-        public static Character player2;
-        public static int characterSelect()                                     //Allows Player 1 to choose his character from a list of available characters
+        public static int numberOfPlayers = 1; public static Character player2;
+        
+        //characterSelect() allows Player 1 to choose his character from a list of available characters
+        public static int characterSelect()
         {   Console.WriteLine("Welcome to DICE THRONE!"); Thread.Sleep(500); Console.WriteLine("Character List:"); Thread.Sleep(500);
-            ArrayList characters = new() { "[1] Artificer", "[2] Barbarian", "[3] Cursed Pirate", "[4] Gunslinger", 
-                                           "[5] Huntress", "[6] Monk", "[7] Moon Elf", "[8] Ninja" };
-            ArrayList characters2 = new() { "[9] Paladin", "[10] Pyromancer", "[11] Samurai", "[12] Seraph", 
-                                            "[13] Shadow Thief", "[14] Tactician", "[15] Treeant", "[16] Vampire Lord" };
+            ArrayList characters = new() { "[1] Artificer", "[2] Barbarian", "[3] Cursed Pirate", "[4] Gunslinger", "[5] Huntress", "[6] Monk", "[7] Moon Elf", "[8] Ninja" };
+            ArrayList characters2 = new() { "[9] Paladin", "[10] Pyromancer", "[11] Samurai", "[12] Seraph", "[13] Shadow Thief", "[14] Tactician", "[15] Treeant", "[16] Vampire Lord" };
             characters.AddRange(characters2); int count = 1; int count2 = 0;
-            foreach (string name in characters)                                 //Cleanly displays 4 characters per row
-            { if (count != characters.Count) {
-                    if (count2 != 3)
-                    { /*printEachChar()*/Console.Write(name); Console.Write(", "); count++; count2++; Thread.Sleep(100); } 
-                      //Can add or remove pEC() to name to speed up TESTING
-                    else { Console.Write(name + "\n"); count2 = 0; Thread.Sleep(100); } }
-                else Console.Write(name); Thread.Sleep(100); }
-            Thread.Sleep(555); int charSelect = -1;
-            while (charSelect < 0)
-            {
-                Console.WriteLine("\nEnter your character's number to continue: ");
-                if (!int.TryParse(Console.ReadLine(), out int num))
-                    Console.WriteLine("Invalid value entered, try again.");
-                else if ((num < 1 || num > 16)) Console.WriteLine("Value must be within 1 and 16");
-                else { Console.WriteLine($"You chose {characters[num - 1]}"); charSelect = num - 1; }
-            }
-            Thread.Sleep(555);
-            return charSelect; }
-        public static void gameModeSelect()                                     //Prompts Player 1 to choose from 7 gamemode styles, generating a match based off of desired opponents
+            foreach (string name in characters) //--------------------------------------------------Cleanly displays 4 characters per row
+            { if (count != characters.Count) { if (count2 != 3) { /*printEachChar()*/Console.Write(name); Console.Write(", "); count++; count2++; Thread.Sleep(100); } //Can add or remove pEC() to name to speed up TESTING
+              else { Console.Write(name + "\n"); count2 = 0; Thread.Sleep(100); } } else Console.Write(name); Thread.Sleep(100); } Thread.Sleep(555); int charSelect = -1;
+            while (charSelect < 0) { Console.WriteLine("\nEnter your character's number to continue: ");
+              if (!int.TryParse(Console.ReadLine(), out int num)) Console.WriteLine("Invalid value entered, try again.");
+              else if ((num < 1 || num > 16)) Console.WriteLine("Value must be within 1 and 16");
+              else { Console.WriteLine($"You chose {characters[num - 1]}"); charSelect = num - 1; } }
+            Thread.Sleep(555); return charSelect; } //-------------------------------------------------------------------DONE
+
+        //gameModeSelect() prompts Player 1 to choose from 7 gamemode styles, generating a match based off of desired opponents
+        public static void gameModeSelect()
         {   Console.WriteLine("°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`");
-            ArrayList gameMode = new()
-            {
-                "[1] King of the Hill", "[2] 1v1", "[3] 2v2",
-                "[4] 3v3", "[5] 4v4", "[6] 2v2v2", "[7] 2v2v2v2"
-            };
+            ArrayList gameMode = new() { "[1] King of the Hill", "[2] 1v1", "[3] 2v2", "[4] 3v3", "[5] 4v4", "[6] 2v2v2", "[7] 2v2v2v2" };
             int gameModeSelect = -1;
             while (gameModeSelect < 0)
             {
@@ -75,8 +62,10 @@ namespace diceThroneAR
                 case 5: break;
                 case 6: break;
                 case 7: break;
-            } }
-        public static void gameMatchMaking(Character p1, Character p2)          //Matchmaking system for 2+ characters
+            } } //-------------------------------------------------------Needs KOTH, 2v2, 3v3, 4v4, 2v2v2, & 2v2v2v2 built out
+
+        //gameMatchMaking(List<Characters>) matchmaking system for 2+ characters
+        public static void gameMatchMaking(Character p1, Character p2) //----------------------------------------Needs to take a List<Characters>
         {   shuffleCards(p1, p1.cards.Count); shuffleCards(p2, p2.cards.Count);
             Console.WriteLine("°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`\n");
             Console.WriteLine("Press enter to shuffle the cards and draw your starting hand (4 cards)!\n"); Console.ReadKey();
@@ -85,12 +74,12 @@ namespace diceThroneAR
             Console.WriteLine("Here are player 2's drawn cards: " + p2.name.ToString() + "\n");
             int d = 0; while (d < 4) { Console.Write(d + 1 + ": "); p2.cards[d].ShowDetails(); p2.cards[d].Drawn = true; d++; }
             Console.ReadKey();
-            Battleground.playMainPhaseHand(rollForFirst(p1, p2)); }
-
+            Battleground.playMainPhaseHand(rollForFirst(p1, p2));
+            Battleground.playRollPhaseHand(Battleground.currentPlayer); } 
     }
     class Character
     {
-        public bool winFirstRoll { get; set; } = false;
+        public bool WinFirstRoll { get; set; } = false;
         public int cP = 2, hP = 50, cardsPlayed = 0;
         public string team, name;
         public string introQuip;
@@ -159,7 +148,7 @@ namespace diceThroneAR
             { {"Barbed Vine","2", "Negative"}, {"Crit", "2", "Positive"}, {"Protect", "2", "Positive"}, {"Accuracy", "2", "Positive"}, {"Blessing Of Divinity", "1", "Unique"}, {null, null, null}, {null, null, null}, {null, null, null}, {null, null, null} }, //Treeant
             { {"Blood Power","5", "Positive"}, {"Crit", "2", "Positive"}, {"Protect", "2", "Positive"}, {"Accuracy", "2", "Positive"}, {"Blessing Of Divinity", "1", "Unique"}, {null, null, null}, {null, null, null}, {null, null, null}, {null, null, null} } //Vampire Lord
         };
-                                                                                // SET TO FINISH SEP. 22nd at latest! **********************TIMELINE***********************
+        // SET TO FINISH SEP. 22nd at latest! **********************TIMELINE***********************
         public static string[,,] cards = new string[,,]
         {
             {{"TRANSFERENCE","2","1","1","Transfer 1 status effect token from a chosen player to another chosen player."},
@@ -292,7 +281,7 @@ namespace diceThroneAR
             {"IMMORTAL FLESH II","2","4","0","DEFENSIVE ROLL 4 DICE On 2 [CLAWS], inflict Bleed.  On 2 [GAZE], gain Blood Power.  Steal 1 Health per 1 [DROPLET] rolled."},
             {null, null, null, null, null}, {null, null, null, null, null}, {null, null, null, null, null}}, //Vampire Lord
         };
-                                                                                // SET TO FINISH SEP. 24th at latest! **********************TIMELINE***********************
+        // SET TO FINISH SEP. 24th at latest! **********************TIMELINE***********************
         public static string[,,] moves = new string[,,]
          {
             { {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null},
@@ -371,7 +360,7 @@ namespace diceThroneAR
               { "IMMORTAL FLESH","2 [CLAWS]","1 INFLICT BLEED","2 [GAZE]","1 GAIN BLOOD POWER","X [DROPLET]","X DMG X HEAL",null},
               { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null} } // 8 moves // Vampire Lord
         };
-                                                                                // SET TO FINISH SEP. 21ST at latest! **********************TIMELINE***********************
+        // SET TO FINISH SEP. 21ST at latest! **********************TIMELINE***********************
         public static string[,] dice = new string[,] 
         {
             {"1", "WRENCH", "2", "WRENCH", "3", "WRENCH", "4", "GEAR", "5", "GEAR", "6", "BOLT"},           //Artificer
@@ -458,11 +447,12 @@ namespace diceThroneAR
     {
         public static int[] sides = { 1, 2, 3, 4, 5, 6 };
     }
-    class GameBoard                                                             //Moves will be cards == Moves type 5, Passive Ability type 6, Defensive type 7
+
+    //Moves will be cards == Moves type 5, Passive Ability type 6, Defensive type 7
+    class GameBoard
     {
         Moves[] moves = new Moves[9];
         Dice[] dice = new Dice[5];
         public bool haveStatusEffects = false;
     }
-}
-/*EST. COMPLETION == Nov. 21st, 2022 */
+} /*----------------------------------------------------------------------------------------------------EST. COMPLETION == Nov. 21st, 2022 */
