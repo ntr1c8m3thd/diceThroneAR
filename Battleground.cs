@@ -50,52 +50,40 @@ namespace diceThroneAR
             else { Console.WriteLine($"\nPlayer {p2.team}, {p2.name}, rolls first!\n"); return p2; }
         }
 
-        //playMainPhaseHand(Character activePlayer) allows for a Main Phase or Hero Upgrade card to be played.
-        public static void playMainPhaseHand(Character activePlayer)
+        //playMainPhaseHand(Character activePlayer) allows for a Main Phase or Hero Upgrade card and certain Status Effects to be played.
+        public static void MainPhase(Character activePlayer)
         {
             currentPlayer = activePlayer;
-            foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 1 || card.Type == 4) card.isPlayable = true;
-            //sets the boolean isPlayable to true if either Main Phase or Hero Upgrade card.
+            foreach (Cards card in activePlayer.hand) if (card.Type == 1 || card.Type == 4) card.isPlayable = true; //sets the boolean isPlayable to true if either Main Phase or Hero Upgrade card.
             int choice = 99;
-            do                                                                  //TODO: Modify to only allow 1-(number of cards in hand)
-            {                                                                   //then display that number as the range of acceptible inputs. 
+            do
+            {
+                int CardsInHand = activePlayer.hand.Count();
                 Console.WriteLine($"Player {activePlayer.team}, {activePlayer.name} please enter the number of the card you wish to play.\n" +
                     "Allowed cards in this phase: Main Phase / Hero Upgrade / Instant Action Cards.\n" +
                     "(Press 0 to view your current hand or -1 to advance to the next phase.)\n"); ;
-                if (!int.TryParse(Console.ReadLine(), out int num))
-                    Console.WriteLine("Invalid value entered, try again.");
-                else if ((num < -1 || num > 10)) Console.WriteLine("Value must be within -1 and 10");
-                else
-                {
-                    if (num == 0)
+                if (!int.TryParse(Console.ReadLine(), out int num)) Console.WriteLine("Invalid value entered, try again.");
+                else if (num < -1 || num > CardsInHand) Console.WriteLine($"Value must be within -1 and {CardsInHand}");
+                else if (num == 0) { int cardCounter = 1; foreach (Cards card in activePlayer.hand) { Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++; } }
+                else if (num > 0 && num <= CardsInHand)
                     {
-                        int cardCounter = 1; foreach (Cards card in activePlayer.cards) if (card.Drawn == true)
-                            {
-                                Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++;
-                            }
+                        if (activePlayer.hand[num - 1].isPlayable != true) Console.WriteLine("This card is not currently playable.");
+                        else {Console.WriteLine($"You played {activePlayer.hand[num - 1].Name}\n"); activePlayer.hand[num - 1].Action(); activePlayer.hand.RemoveAt(num - 1); activePlayer.cardsPlayed++; }
                     }
-                    else if (num > 0 && num < 11)
-                    {
-                        if (activePlayer.cards[num - 1 + activePlayer.cardsPlayed].isPlayable != true) Console.WriteLine("This card is not currently playable.");
-                        else
-                        {
-                            Console.WriteLine($"You played {activePlayer.cards[num - 1 - activePlayer.cardsPlayed].Name}");
-                            activePlayer.cards[num - 1 - activePlayer.cardsPlayed].Action(); activePlayer.cardsPlayed++;
-                        }
-                    }
-                    else if (num == -1) { Console.WriteLine("Advancing to next phase..."); choice = -1; }
-                }
+                else if (num == -1) { Console.WriteLine("Advancing to the Offensive Roll phase...\n"); choice = -1; }
             }
-            while (choice != -1);
-            foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 1 || card.Type == 4) card.isPlayable = false; //flips bool isPlayable to False at end of phase
+            while (choice != -1); //TODO: Modify to only allow 1-(number of cards in hand) then display that number as the range of acceptible inputs.
+            foreach (Cards card in activePlayer.hand) if (card.Type == 1 || card.Type == 4) card.isPlayable = false; //flips bool isPlayable to False at end of phase
         }
-        public static void playRollPhaseHand(Character activePlayer)
+
+        public static void OffensiveRollPhase(Character activePlayer)
         {
-            foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 2) card.isPlayable = true; //sets the boolean isPlayable to true if Roll Phase card.
+            foreach (Cards card in activePlayer.hand) if (card.Type == 2) card.isPlayable = true; //sets the boolean isPlayable to true if Roll Phase card.
             int choice = -2, choice2 = -2, choice3 = -2, choice4 = -2; Random roll = new Random();
 
             do //==================================================================================================================================Leads to first roll
             {
+                int CardsInHand = activePlayer.hand.Count();
                 Console.WriteLine($"Player {activePlayer.team}, {activePlayer.name} please enter the number of the card you wish to play.\n" +
                     "Allowed cards in this phase: Roll Phase / Instant Action Cards.\n" +
                     "(Enter 0 to view your current hand or enter 99 to roll your first roll attempt.)\n"); ;
@@ -103,11 +91,11 @@ namespace diceThroneAR
                 else if (num == 99)
                 {
                     for (int x = 0; x < 5; x++) RollResults[x] = roll.Next(1, 7);
-                    printRR(); //TODO: correlate the number rolled with the type of item on the character's di
-                    Console.WriteLine("\nPlease enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or 99 to reroll some or all of your dice.");
 
                     do //==========================================================================================================================Leads to second roll
                     {
+                        printRR(); //TODO: correlate the number rolled with the type of item on the character's di
+                        Console.WriteLine("\nPlease enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or 99 to reroll some or all of your dice.");
                         if (!int.TryParse(Console.ReadLine(), out int num2)) Console.WriteLine("Invalid value entered, try again.");
                         else if (num2 == 99) //allows the player to pick 1-5 di(ce) and reroll
                         {
@@ -147,9 +135,9 @@ namespace diceThroneAR
                                     case 45: RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                     case 5: RollResults[4] = roll.Next(1, 7); printRR(); break;
                                 }
-                                Console.WriteLine("\nPlease enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or 99 to reroll some or all of your dice.");
                                 do //==========================================================================================================================Leads to final roll
                                 {
+                                    Console.WriteLine("\nPlease enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or 99 to reroll some or all of your dice.");
                                     if (!int.TryParse(Console.ReadLine(), out int num4)) Console.WriteLine("Invalid value entered, try again.");
                                     else if (num4 == 99) //allows the player to pick 1-5 di(ce) and reroll
                                     {
@@ -189,18 +177,19 @@ namespace diceThroneAR
                                                 case 45: RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                                 case 5: RollResults[4] = roll.Next(1, 7); printRR(); break;
                                             }
-                                            Console.WriteLine("\nPlease enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or -1 if you cannot activate a move.");
+
                                             do //==========================================================================================================================Leads to SOGOTP moment
                                             {
+                                                Console.WriteLine("\nPlease enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or -1 if you cannot activate a move.");
                                                 if (!int.TryParse(Console.ReadLine(), out int num6)) Console.WriteLine("Invalid value entered, try again.");
-                                                else if (num6 == 0) { int cardCounter = 1; foreach (Cards card in activePlayer.cards) if (card.Drawn == true) { Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++; } }
-                                                else if (num6 > 0 && num6 < 11)
+                                                else if (num6 == 0) { int cardCounter = 1; foreach (Cards card in activePlayer.hand) { Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++; } }
+                                                else if (num6 > 0 && num6 <= CardsInHand)
                                                 {
-                                                    if (activePlayer.cards[num - 1 + activePlayer.cardsPlayed].isPlayable != true) Console.WriteLine("This card is not currently playable.");
-                                                    else { Console.WriteLine($"You played {activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Name}"); activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Action(); activePlayer.cardsPlayed++; }
+                                                    if (activePlayer.hand[num6 - 1].isPlayable != true) Console.WriteLine("This card is not currently playable.");
+                                                    else { Console.WriteLine($"You played {activePlayer.hand[num6 - 1].Name}\n"); activePlayer.hand[num6 - 1].Action(); activePlayer.hand.RemoveAt(num6 - 1); activePlayer.cardsPlayed++; }
                                                 }
-                                                else if (num6 == -1) { choice3 = -1; choice2 = -1; choice = -1; } //need to find a way to bypass Targetting/Defensive Phase and go straight to Main Phase 2
-                                                else if (num6 < 25 || num6 > 35) Console.WriteLine("Value must be within 25 and 35");
+                                                else if (num6 == -1) { choice4 = -1;  choice3 = -1; choice2 = -1; choice = -1; } //need to find a way to bypass Targetting/Defensive Phase and go straight to Main Phase 2
+                                                else if (num6 < -1 || (25 < num6 && num6 > CardsInHand) || num6 > 35) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 25 and 35");
                                                 else
                                                 {
                                                     switch (num6)
@@ -219,17 +208,17 @@ namespace diceThroneAR
                                                     }
                                                 }
                                             }
-                                            while (choice4 != -1);
+                                            while (choice4 != -1); //==========================================================================================================================Leads to SOGOTP moment
                                         }
                                     }
-                                    else if (num4 == 0) { int cardCounter = 1; foreach (Cards card in activePlayer.cards) if (card.Drawn == true) { Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++; } }
-                                    else if (num4 > 0 && num4 < 11)
+                                    else if (num4 == 0) { int cardCounter = 1; foreach (Cards card in activePlayer.hand) { Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++; } }
+                                    else if (num4 > 0 && num4 <= CardsInHand)
                                     {
-                                        if (activePlayer.cards[num - 1 + activePlayer.cardsPlayed].isPlayable != true) Console.WriteLine("This card is not currently playable.");
-                                        else { Console.WriteLine($"You played {activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Name}"); activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Action(); activePlayer.cardsPlayed++; }
+                                        if (activePlayer.hand[num4 - 1].isPlayable != true) Console.WriteLine("This card is not currently playable.");
+                                        else { Console.WriteLine($"You played {activePlayer.hand[num4 - 1].Name}\n"); activePlayer.hand[num4 - 1].Action(); activePlayer.hand.RemoveAt(num4 - 1); activePlayer.cardsPlayed++; }
                                     }
                                     else if (num4 == -1) { choice3 = -1; choice2 = -1; choice = -1; } //need a way to bypass Targetting Phase and Defensive Phase and go straight to Main Phase
-                                    else if ((num4 < 25 || num4 > 35)) Console.WriteLine("Value must be within 25 and 35");
+                                    else if (num4 < -1 || (25 < num4 && num4 > CardsInHand) || num4 > 35) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 25 and 35");
                                     else
                                     {
                                         switch (num4)
@@ -248,19 +237,17 @@ namespace diceThroneAR
                                         }
                                     }
                                 }
-                                while (choice3 != -1);
+                                while (choice3 != -1); //==========================================================================================================================Leads to final roll
                             }
                         }
                         else if (num2 == 0)
+                        { int cardCounter = 1; foreach (Cards card in activePlayer.hand) { Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++; } }
+                        else if (num2 > 0 && num2 <= CardsInHand)
                         {
-                            int cardCounter = 1; foreach (Cards card in activePlayer.cards) if (card.Drawn == true) { Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++; }
+                            if (activePlayer.hand[num2 - 1].isPlayable != true) Console.WriteLine("This card is not currently playable.");
+                            else { Console.WriteLine($"You played {activePlayer.hand[num2 - 1].Name}\n"); activePlayer.hand[num2 - 1].Action(); activePlayer.hand.RemoveAt(num2 - 1); activePlayer.cardsPlayed++; }
                         }
-                        else if (num2 > 0 && num2 < 11)
-                        {
-                            if (activePlayer.cards[num - 1 + activePlayer.cardsPlayed].isPlayable != true) Console.WriteLine("This card is not currently playable.");
-                            else { Console.WriteLine($"You played {activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Name}"); activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Action(); activePlayer.cardsPlayed++; }
-                        }
-                        else if ((num2 < 25 || num2 > 35)) Console.WriteLine("Value must be within 25 and 35");
+                        else if (num2 < -1 || (25 < num2 && num2 > CardsInHand) || num2 > 35) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 25 and 35");
                         else
                         {
                             switch (num2)
@@ -279,117 +266,25 @@ namespace diceThroneAR
                             }
                         }
                     }
-                    while (choice2 != -1);
+                    while (choice2 != -1); //==========================================================================================================================Leads to second roll
                 }
                 else if (num == 0)
                 {
-                    int cardCounter = 1; foreach (Cards card in activePlayer.cards) if (card.Drawn == true) { Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++; }
+                    int cardCounter = 1; foreach (Cards card in activePlayer.hand) { Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++; }
                 }
-                else if (num > 0 && num < 11)
+                else if (num > 0 && num <= CardsInHand)
                 {
-                    if (activePlayer.cards[num - 1 + activePlayer.cardsPlayed].isPlayable != true) Console.WriteLine("This card is not currently playable.");
-                    else { Console.WriteLine($"You played {activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Name}"); activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Action(); activePlayer.cardsPlayed++; }
+                    if (activePlayer.hand[num - 1].isPlayable != true) Console.WriteLine("This card is not currently playable.");
+                    else { Console.WriteLine($"You played {activePlayer.hand[num - 1].Name}\n"); activePlayer.hand[num - 1].Action(); activePlayer.hand.RemoveAt(num - 1); activePlayer.cardsPlayed++; }
                 }
-                else if ((num < -1 || num > 10)) Console.WriteLine("Value must be within 0 and 10");
-                else if (num == -1) { Console.WriteLine("Advancing to next phase..."); choice = -1; }
+                else if ((num < -1 || num > 10)) Console.WriteLine($"Value must be within -1 and {CardsInHand}");
+                else if (num == -1) { Console.WriteLine("Advancing to next phase..."); choice = -1; } //<--shouldnt allow player to skip Offensive Roll Phase UNLESS MAYBE UNDER A KNOCKDOWN CONDITION??
             }
-            while (choice != -1);
+            while (choice != -1); //==================================================================================================================================Leads to first roll
 
-            foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 2) card.isPlayable = false; //flips bool isPlayable to False at end of phase
-            Console.WriteLine("Advancing to next phase...");
+            foreach (Cards card in activePlayer.hand) if (card.Type == 2) card.isPlayable = false; //flips bool isPlayable to False at end of phase
+            Console.WriteLine("Advancing to the Targetting Roll phase...\n");
         }
-        
-        /* 1st rendition
-        public static void playRollPhaseHand(Character activePlayer)
-        {
-            foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 2) card.isPlayable = true;
-            //sets the boolean isPlayable to true if Roll Phase card.
-            int choice = -2; Random roll = new Random();
-            int[] RollResults = new int[5];
-            do                                                                  //TODO: Modify to only allow 1-(number of cards in hand)
-            {                                                                   //then display that number as the range of acceptible inputs. 
-                Console.WriteLine($"Player {activePlayer.team}, {activePlayer.name} please enter the number of the card you wish to play.\n" +
-                    "Allowed cards in this phase: Roll Phase / Instant Action Cards.\n" +
-                    "(Enter 0 to view your current hand or enter 99 to roll your first roll attempt.)\n"); ;
-                if (!int.TryParse(Console.ReadLine(), out int num))
-                    Console.WriteLine("Invalid value entered, try again.");
-                else if (num == 99)
-                {
-                    for (int x = 0; x < 5; x++) { RollResults[x] = roll.Next(1, 7); }
-                    Console.WriteLine($"You rolled 1: {RollResults[0]} || 2: {RollResults[1]} || 3: {RollResults[2]} || 4: {RollResults[3]} || and 5: {RollResults[4]}!"); //TODO: correlate the number rolled with the type of item on the character's di
-                    Console.WriteLine("Please enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or 99 to reroll some or all of your dice.");
-                    if (!int.TryParse(Console.ReadLine(), out int num2))
-                        Console.WriteLine("Invalid value entered, try again.");
-                    else if (num2 == 99)
-                    {
-                        //this block  allows the player to pick 1-5 dice and reroll
-                        Console.WriteLine("Enter which di(ce) you wish to reroll. ie. 35 if dice 3 and 5, 124 if dice 1, 2 and 4.");
-                        if (!int.TryParse(Console.ReadLine(), out int num3))
-                            Console.WriteLine("Invalid value entered, try again.");
-                        else if (num3 <= 0 || num3 > 12345) Console.WriteLine("Value must be within 1 and 12345");
-                        else
-                        {
-                            switch (num3)
-                            {
-                                case 1: RollResults[0] = roll.Next(1, 7); Console.WriteLine($"You now have 1: {RollResults[0]} || 2: {RollResults[1]} || 3: {RollResults[2]} || 4: {RollResults[3]} || and 5: {RollResults[4]}!"); break;
-                                case 12: break;
-                                case 13: break;
-                                case 14: break;
-                                case 15: break;
-                                case 123: break;
-                                case 124: break;
-                                case 125: break;
-                                case 1234: break;
-                                case 1235: break;
-                                case 12345: break;
-                                case 134: break;
-                                case 1345: break;
-                                case 145: break;
-                            }
-                        }
-                    }
-                    else if (num2 == 0)
-                    {
-                        int cardCounter = 1; foreach (Cards card in activePlayer.cards) if (card.Drawn == true)
-                            {
-                                Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++;
-                            }
-                    }
-                    else if (num2 > 0 && num2 < 11)
-                    {
-                        if (activePlayer.cards[num - 1 + activePlayer.cardsPlayed].isPlayable != true) Console.WriteLine("This card is not currently playable.");
-                        else { Console.WriteLine($"You played {activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Name}"); activePlayer.cards[num - 1 + activePlayer.cardsPlayed].Action(); activePlayer.cardsPlayed++; }
-                    }
-                    else if ((num2 < 25 || num2 > 35)) Console.WriteLine("Value must be within 25 and 35");
-                    else
-                    {
-                        switch (num2)
-                        {
-                            case 25: break;
-                            case 26: break;
-                            case 27: break;
-                            case 28: break;
-                            case 29: break;
-                            case 30: break;
-                            case 31: break;
-                            case 32: break;
-                            case 33: break;
-                            case 34: break;
-                            case 35: break;
-                        }
-                    }
-                }
-                else if ((num < -1 || num > 10)) Console.WriteLine("Value must be within 0 and 10");
-
-
-                //TODO: if 99 is entered, prompt user to chose which dice (2-3-4) and reroll
-                //      then loop to offer a declaration of move orrr allow for final reroll
-                //      must also allow user to play Roll Phase or IA card.
-                //      fuck this shit is no cake walk lol
-            }
-            while (choice != -1);
-            foreach (Cards card in activePlayer.cards) if (card.Drawn == true) if (card.Type == 2) card.isPlayable = false; //flips bool isPlayable to False at end of phase
-        }*/
     }
 
     class Cards

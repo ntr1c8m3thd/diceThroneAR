@@ -67,16 +67,20 @@ namespace diceThroneAR
         //gameMatchMaking(List<Characters>) matchmaking system for 2+ characters
         public static void gameMatchMaking(Character p1, Character p2) //----------------------------------------Needs to take a List<Characters>
         {   shuffleCards(p1, p1.cards.Count); shuffleCards(p2, p2.cards.Count);
+
             Console.WriteLine("°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`\n");
             Console.WriteLine("Press enter to shuffle the cards and draw your starting hand (4 cards)!\n"); Console.ReadKey();
+
             Console.WriteLine("Here are player 1's drawn cards: " + p1.name.ToString() + "\n");
-            int c = 0; while (c < 4) { Console.Write(c + 1 + ": "); p1.cards[c].ShowDetails(); p1.cards[c].Drawn = true; c++; }
+            int c = 0; while (c < 4) { Console.Write(c + 1 + ": "); p1.cards[c].ShowDetails(); p1.cards[c].Drawn = true; p1.hand.Add(p1.cards[c]); c++; }
             Console.WriteLine("Here are player 2's drawn cards: " + p2.name.ToString() + "\n");
-            int d = 0; while (d < 4) { Console.Write(d + 1 + ": "); p2.cards[d].ShowDetails(); p2.cards[d].Drawn = true; d++; }
+            int d = 0; while (d < 4) { Console.Write(d + 1 + ": "); p2.cards[d].ShowDetails(); p2.cards[d].Drawn = true; p2.hand.Add(p2.cards[d]); d++; }
+
             Console.ReadKey();
-            Battleground.playMainPhaseHand(rollForFirst(p1, p2));
-            Battleground.playRollPhaseHand(Battleground.currentPlayer); } 
+            Battleground.MainPhase(rollForFirst(p1, p2));
+            Battleground.OffensiveRollPhase(Battleground.currentPlayer); } 
     }
+
     class Character
     {
         public bool WinFirstRoll { get; set; } = false;
@@ -85,6 +89,7 @@ namespace diceThroneAR
         public string introQuip;
         public List<StatusEffect> statusEffects = new List<StatusEffect>();
         public List<Cards> cards = new List<Cards>();
+        public List<Cards> hand = new List<Cards>();
 
         public Character(string t, string n, string iQ)
         {
@@ -100,12 +105,13 @@ namespace diceThroneAR
                 if (b + 1 != statusEffects.Count) { Console.Write($"{statusEffects[b].name}, Quantity ({statusEffects[b].quantity}), Type: {statusEffects[b].status}\n                               = "); b++; }
                 else Console.Write($"{statusEffects[b].name}, Quantity ({statusEffects[b].quantity}), Type: {statusEffects[b].status}\n");
             }
-            Console.Write($"\"I have {cards.Count} cards total.\"\n\n");
+            /*Console.Write($"\"I have {cards.Count} cards total.\"\n\n");
             int cardCounter = 1;
-            foreach (Cards a in cards) { Console.Write(cardCounter + ": "); a.ShowDetails(); cardCounter++; }
+            foreach (Cards a in cards) { Console.Write(cardCounter + ": "); a.ShowDetails(); cardCounter++; }*/     //----COMMENTING OUT FOR NOW
             //int c = 0; while (c < 5) { cards[c].ShowDetails(); c++; //Shows just five out of x amount of cards.}
         }
     }
+
     class CharacterInfo
     {
         public static string[] names = {
@@ -431,6 +437,7 @@ namespace diceThroneAR
             return generatedDeck;
         }
     }
+
     class StatusEffect
     {
         public string name, status;
@@ -438,15 +445,18 @@ namespace diceThroneAR
         public bool isPersistent = false;
         public StatusEffect(string n, int q, string s) { this.name = n; this.quantity = q; this.status = s; }
     }
+
     class Moves
     {
         public string name, diceCombo;
         public bool isInvisibleLocked = true;
     }
+
     class Dice
     {
         public static int[] sides = { 1, 2, 3, 4, 5, 6 };
     }
+
     //Moves will be cards == Moves type 5, Passive Ability type 6, Defensive type 7
     class GameBoard
     {
