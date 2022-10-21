@@ -63,7 +63,7 @@ namespace diceThroneAR
                     "Allowed cards in this phase: Main Phase / Hero Upgrade / Instant Action Cards.\n" +
                     "(Press 0 to view your current hand or -1 to advance to the next phase.)\n"); ;
                 if (!int.TryParse(Console.ReadLine(), out int num)) Console.WriteLine("Invalid value entered, try again.");
-                else if (num < -1 || num > CardsInHand) Console.WriteLine($"Value must be within -1 and {CardsInHand}");
+                else if (num < -1 || num > CardsInHand) Console.WriteLine($"Value must be within -1 and {CardsInHand}!");
                 else if (num == 0) { int cardCounter = 1; foreach (Cards card in activePlayer.hand) { Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++; } }
                 else if (num > 0 && num <= CardsInHand)
                     {
@@ -189,7 +189,7 @@ namespace diceThroneAR
                                                     else { Console.WriteLine($"You played {activePlayer.hand[num6 - 1].Name}\n"); activePlayer.hand[num6 - 1].Action(); activePlayer.hand.RemoveAt(num6 - 1); activePlayer.cardsPlayed++; }
                                                 }
                                                 else if (num6 == -1) { choice4 = -1;  choice3 = -1; choice2 = -1; choice = -1; } //need to find a way to bypass Targetting/Defensive Phase and go straight to Main Phase 2
-                                                else if (num6 < -1 || (25 < num6 && num6 > CardsInHand) || num6 > 35) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 25 and 35");
+                                                else if (num6 < -1 || (25 < num6 && num6 > CardsInHand) || num6 > 35) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 25 and 35!");
                                                 else
                                                 {
                                                     switch (num6)
@@ -218,7 +218,7 @@ namespace diceThroneAR
                                         else { Console.WriteLine($"You played {activePlayer.hand[num4 - 1].Name}\n"); activePlayer.hand[num4 - 1].Action(); activePlayer.hand.RemoveAt(num4 - 1); activePlayer.cardsPlayed++; }
                                     }
                                     else if (num4 == -1) { choice3 = -1; choice2 = -1; choice = -1; } //need a way to bypass Targetting Phase and Defensive Phase and go straight to Main Phase
-                                    else if (num4 < -1 || (25 < num4 && num4 > CardsInHand) || num4 > 35) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 25 and 35");
+                                    else if (num4 < -1 || (25 < num4 && num4 > CardsInHand) || num4 > 35) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 25 and 35 or 99!");
                                     else
                                     {
                                         switch (num4)
@@ -247,7 +247,7 @@ namespace diceThroneAR
                             if (activePlayer.hand[num2 - 1].isPlayable != true) Console.WriteLine("This card is not currently playable.");
                             else { Console.WriteLine($"You played {activePlayer.hand[num2 - 1].Name}\n"); activePlayer.hand[num2 - 1].Action(); activePlayer.hand.RemoveAt(num2 - 1); activePlayer.cardsPlayed++; }
                         }
-                        else if (num2 < -1 || (25 < num2 && num2 > CardsInHand) || num2 > 35) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 25 and 35");
+                        else if (num2 < -1 || (25 < num2 && num2 > CardsInHand) || num2 > 35) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 25 and 35 or 99!");
                         else
                         {
                             switch (num2)
@@ -277,7 +277,7 @@ namespace diceThroneAR
                     if (activePlayer.hand[num - 1].isPlayable != true) Console.WriteLine("This card is not currently playable.");
                     else { Console.WriteLine($"You played {activePlayer.hand[num - 1].Name}\n"); activePlayer.hand[num - 1].Action(); activePlayer.hand.RemoveAt(num - 1); activePlayer.cardsPlayed++; }
                 }
-                else if ((num < -1 || num > 10)) Console.WriteLine($"Value must be within -1 and {CardsInHand}");
+                else if ((num < -1 || num > 10)) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 99!");
                 else if (num == -1) { Console.WriteLine("Advancing to next phase..."); choice = -1; } //<--shouldnt allow player to skip Offensive Roll Phase UNLESS MAYBE UNDER A KNOCKDOWN CONDITION??
             }
             while (choice != -1); //==================================================================================================================================Leads to first roll
