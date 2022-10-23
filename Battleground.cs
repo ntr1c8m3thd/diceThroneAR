@@ -7,6 +7,7 @@ namespace diceThroneAR
     class Battleground                                                          
     {
         public static Character currentPlayer;
+        public static Character targettedPlayer;
         public static int[] RollResults = new int[5];
         public static void printRR() { Console.Write($"You rolled 1: {RollResults[0]} || 2: {RollResults[1]} || 3: {RollResults[2]} || 4: {RollResults[3]} || and 5: {RollResults[4]}!"); }
         public static void printEachChar(string word)
@@ -14,10 +15,8 @@ namespace diceThroneAR
             for (int counter = 0; counter < word.Length; counter++)
             { Console.Write(word[counter].ToString()); Thread.Sleep(10); }
         }
-
         public static void shuffleCards(Character p, int deckSize)
         {
-            //Fisher-Yates shuffle algorithm
             int i = 0, j = 0, MAXCARDS = deckSize;
             Random sortRandom = new Random();
             for (i = 0; i <= (MAXCARDS - 1); i++)
@@ -27,11 +26,10 @@ namespace diceThroneAR
                 p.cards[i] = p.cards[j];
                 p.cards[j] = deck;
             }
-        }
+        } //Fisher-Yates shuffle algorithm
         public static Character rollForFirst(Character p1, Character p2)        //TODO: Update parameters to take List<Characters> and add TIEBREAKER protocol
         {
             int player = 1, highestRoll = 0, whoRolledHighest = 0;
-            Console.WriteLine("/**************************************4DBUGG1NG************************************************/");
             while (GameFlow.numberOfPlayers != 0)
             {
                 Console.WriteLine($"\nPlayer {player}: Press enter to roll:");
@@ -46,11 +44,9 @@ namespace diceThroneAR
                 case 1: p1.WinFirstRoll = true; break;
                 case 2: p2.WinFirstRoll = true; break;
             }
-            if (p1.WinFirstRoll == true) { Console.WriteLine($"\nPlayer {p1.team}, {p1.name}, rolls first!\n"); return p1; }
-            else { Console.WriteLine($"\nPlayer {p2.team}, {p2.name}, rolls first!\n"); return p2; }
+            if (p1.WinFirstRoll == true) { Console.WriteLine($"\nPlayer {p1.team}, {p1.name}, rolls first!\n"); targettedPlayer = p2; return p1; }
+            else { Console.WriteLine($"\nPlayer {p2.team}, {p2.name}, rolls first!\n"); targettedPlayer = p1; return p2; }
         }
-
-        //playMainPhaseHand(Character activePlayer) allows for a Main Phase or Hero Upgrade card and certain Status Effects to be played.
         public static void MainPhase(Character activePlayer)
         {
             currentPlayer = activePlayer;
@@ -74,8 +70,7 @@ namespace diceThroneAR
             }
             while (choice != -1); //TODO: Modify to only allow 1-(number of cards in hand) then display that number as the range of acceptible inputs.
             foreach (Cards card in activePlayer.hand) if (card.Type == 1 || card.Type == 4) card.isPlayable = false; //flips bool isPlayable to False at end of phase
-        }
-
+        } //MainPhase(Character activePlayer) allows for a Main Phase, Hero Upgrade, or Instant Action card and certain Status Effects to be played.
         public static void OffensiveRollPhase(Character activePlayer)
         {
             foreach (Cards card in activePlayer.hand) if (card.Type == 2) card.isPlayable = true; //sets the boolean isPlayable to true if Roll Phase card.
@@ -217,8 +212,8 @@ namespace diceThroneAR
                                         if (activePlayer.hand[num4 - 1].isPlayable != true) Console.WriteLine("This card is not currently playable.");
                                         else { Console.WriteLine($"You played {activePlayer.hand[num4 - 1].Name}\n"); activePlayer.hand[num4 - 1].Action(); activePlayer.hand.RemoveAt(num4 - 1); activePlayer.cardsPlayed++; }
                                     }
-                                    else if (num4 == -1) { choice3 = -1; choice2 = -1; choice = -1; } //need a way to bypass Targetting Phase and Defensive Phase and go straight to Main Phase
-                                    else if (num4 < -1 || (25 < num4 && num4 > CardsInHand) || num4 > 35) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 25 and 35 or 99!");
+                                    else if (num4 < 0 || (25 < num4 && num4 > CardsInHand) || num4 > 35) Console.WriteLine($"Value must be within 0 and {CardsInHand} or 25 and 35 or 99!");
+                                    else if (num4 == -1) { choice3 = -1; choice2 = -1; choice = -1; } //In the event that a player only has two rolls due to losing a roll turn...
                                     else
                                     {
                                         switch (num4)
@@ -247,7 +242,7 @@ namespace diceThroneAR
                             if (activePlayer.hand[num2 - 1].isPlayable != true) Console.WriteLine("This card is not currently playable.");
                             else { Console.WriteLine($"You played {activePlayer.hand[num2 - 1].Name}\n"); activePlayer.hand[num2 - 1].Action(); activePlayer.hand.RemoveAt(num2 - 1); activePlayer.cardsPlayed++; }
                         }
-                        else if (num2 < -1 || (25 < num2 && num2 > CardsInHand) || num2 > 35) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 25 and 35 or 99!");
+                        else if (num2 < 0 || (25 < num2 && num2 > CardsInHand) || num2 > 35) Console.WriteLine($"Value must be within 0 and {CardsInHand} or 25 and 35 or 99!");
                         else
                         {
                             switch (num2)
@@ -277,13 +272,28 @@ namespace diceThroneAR
                     if (activePlayer.hand[num - 1].isPlayable != true) Console.WriteLine("This card is not currently playable.");
                     else { Console.WriteLine($"You played {activePlayer.hand[num - 1].Name}\n"); activePlayer.hand[num - 1].Action(); activePlayer.hand.RemoveAt(num - 1); activePlayer.cardsPlayed++; }
                 }
-                else if ((num < -1 || num > 10)) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 99!");
+                else if (num < 0 || num > CardsInHand) Console.WriteLine($"Value must be within 0 and {CardsInHand} or 99!");
                 else if (num == -1) { Console.WriteLine("Advancing to next phase..."); choice = -1; } //<--shouldnt allow player to skip Offensive Roll Phase UNLESS MAYBE UNDER A KNOCKDOWN CONDITION??
             }
             while (choice != -1); //==================================================================================================================================Leads to first roll
-
-            foreach (Cards card in activePlayer.hand) if (card.Type == 2) card.isPlayable = false; //flips bool isPlayable to False at end of phase
             Console.WriteLine("Advancing to the Targetting Roll phase...\n");
+        } //OffensiveRollPhase(Character activePlayer) allows for a Roll Phase or Instant Action card and certain Status Effects to be played.
+        public static Character TargetingRollPhase(Character activePlayer)
+        {
+            //ADD CODE FOR TARGETTING PROTOCOL
+            //Roll 1 die (This die may be manipulated with cards, unless the Attack is an Ultimate Ability.
+            //Determine the Defender who will be receiving the damage based on the result of your die roll.
+            // 1 or 2 - Target the opponent on your left
+            // 3 or 4 - Target the opponent on your right
+            // 5 - Your opponents choose which of them you target
+            // 6 - Choose either opponent as your target
+            Console.WriteLine($"Your targetted player is {targettedPlayer.name}\n");
+            return targettedPlayer;
+        }
+        public static void DefensiveRollPhase(Character targettedPlayer)
+        { 
+            //ADD CODE FOR players that have 2 defensive rolls PROTOCOL
+
         }
     }
 

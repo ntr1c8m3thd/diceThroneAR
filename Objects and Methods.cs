@@ -19,12 +19,13 @@ namespace diceThroneAR
               if (!int.TryParse(Console.ReadLine(), out int num)) Console.WriteLine("Invalid value entered, try again.");
               else if ((num < 1 || num > 16)) Console.WriteLine("Value must be within 1 and 16");
               else { Console.WriteLine($"You chose {characters[num - 1]}"); charSelect = num - 1; } }
-            Thread.Sleep(555); return charSelect; } //-------------------------------------------------------------------DONE
+            Thread.Sleep(555); return charSelect;
+        } //------------------------------------------------------------------------------------------------------------------DONE
 
         //gameModeSelect() prompts Player 1 to choose from 7 gamemode styles, generating a match based off of desired opponents
         public static void gameModeSelect()
         {   Console.WriteLine("°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`");
-            ArrayList gameMode = new() { "[1] King of the Hill", "[2] 1v1", "[3] 2v2", "[4] 3v3", "[5] 4v4", "[6] 2v2v2", "[7] 2v2v2v2" };
+            ArrayList gameMode = new() { "[1] King of the Hill", "[2] 1v1", "[3] 2v2" };
             int gameModeSelect = -1;
             while (gameModeSelect < 0)
             {
@@ -62,10 +63,10 @@ namespace diceThroneAR
                 case 5: break;
                 case 6: break;
                 case 7: break;
-            } } //-------------------------------------------------------Needs KOTH, 2v2, 3v3, 4v4, 2v2v2, & 2v2v2v2 built out
+            } } //-------------Needs KOTH (3 player game) and 2v2 additionally (variant game modes will be future ADD ON/EXPANSION PACK)
 
         //gameMatchMaking(List<Characters>) matchmaking system for 2+ characters
-        public static void gameMatchMaking(Character p1, Character p2) //----------------------------------------Needs to take a List<Characters>
+        public static void gameMatchMaking(Character p1, Character p2) 
         {   shuffleCards(p1, p1.cards.Count); shuffleCards(p2, p2.cards.Count);
 
             Console.WriteLine("°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`\n");
@@ -78,7 +79,9 @@ namespace diceThroneAR
 
             Console.ReadKey();
             Battleground.MainPhase(rollForFirst(p1, p2));
-            Battleground.OffensiveRollPhase(Battleground.currentPlayer); } 
+            Battleground.OffensiveRollPhase(Battleground.currentPlayer);
+            Battleground.DefensiveRollPhase(Battleground.TargetingRollPhase(Battleground.currentPlayer));
+        } //----------------------------------------------------------Needs to take a List<Characters>
     }
 
     class Character
@@ -90,11 +93,8 @@ namespace diceThroneAR
         public List<StatusEffect> statusEffects = new List<StatusEffect>();
         public List<Cards> cards = new List<Cards>();
         public List<Cards> hand = new List<Cards>();
-
         public Character(string t, string n, string iQ)
-        {
-            this.team = t; this.name = n; this.introQuip = iQ;
-        }
+        { this.team = t; this.name = n; this.introQuip = iQ; }
         public void IntroCharacter()
         {
             Console.WriteLine($"\n\"{introQuip}\"");
@@ -154,21 +154,27 @@ namespace diceThroneAR
             { {"Barbed Vine","2", "Negative"}, {"Crit", "2", "Positive"}, {"Protect", "2", "Positive"}, {"Accuracy", "2", "Positive"}, {"Blessing Of Divinity", "1", "Unique"}, {null, null, null}, {null, null, null}, {null, null, null}, {null, null, null} }, //Treeant
             { {"Blood Power","5", "Positive"}, {"Crit", "2", "Positive"}, {"Protect", "2", "Positive"}, {"Accuracy", "2", "Positive"}, {"Blessing Of Divinity", "1", "Unique"}, {null, null, null}, {null, null, null}, {null, null, null}, {null, null, null} } //Vampire Lord
         };
-        // SET TO FINISH SEP. 22nd at latest! **********************TIMELINE***********************
+        // SET TO FINISH OCT. 26th at latest! **********************TIMELINE*********************** FIX PYROMANCER AND BELOW
         public static string[,,] cards = new string[,,]
         {
             {{"TRANSFERENCE","2","1","1","Transfer 1 status effect token from a chosen player to another chosen player."},
-            {"VEGAS BABY!","0","1","0","Roll 1 Di: Gain 1/2 the value as CP (rounded up)."}, {"WHAT STATUS EFFECTS?","2","1","0","Remove all status effect tokens from a chosen player."},
+            {"VEGAS BABY!","0","1","0","Roll 1 Die: Gain 1/2 the value as CP (rounded up)."},
+            {"WHAT STATUS EFFECTS?","2","1","0","Remove all status effect tokens from a chosen player."},
             {"GET THAT OUTTA HERE!","1","1","1","Remove a status effect token from a chosen player."},
             {"ONE MORE TIME!","1","2","5","A chosen player may perform an additional Roll Attempt of up to five dice during their Offensive Roll Phase."},
-            {"TWICE AS WILD!","3","2","2","Change the values of any two dice."}, {"TRY, TRY AGAIN!","1","2","2","You or a chosen teamate may re-roll up to two dice (can be the same die twice in a row or two different dice)."},
-            {"NOT THIS TIME!","1","2","6","A chosen player prevents 6 (Regular) incoming damage."}, {"SO WILD!","2","2","1","Change the value of any one die."},
+            {"TWICE AS WILD!","3","2","2","Change the values of any two dice."},
+            {"TRY, TRY AGAIN!","1","2","2","You or a chosen teamate may re-roll up to two dice (can be the same die twice in a row or two different dice)."},
+            {"NOT THIS TIME!","1","2","6","A chosen player prevents 6 (Regular) incoming damage."},
+            {"SO WILD!","2","2","1","Change the value of any one die."},
             {"SAMSIES!","1","2","1","Change the value of one of your dice to be identical to the value of another one of your dice (that was rolled within the same phase and for the same purpose)."},
-            {"HELPING HAND","1","2","1","Select one iof your opponent's dice and force them to re-roll it."}, {"SIX-IT!","1","2","1","Change the value of one of your dice to a 6."},
+            {"HELPING HAND","1","2","1","Select one iof your opponent's dice and force them to re-roll it."},
+            {"SIX-IT!","1","2","1","Change the value of one of your dice to a 6."},
             {"BETTER D!","0","2","5","A chosen player may perform an additional Roll Attempt of up to five dice during their Defensive Roll Phase."},
             {"TIP IT!","1","3", "1","Increase or decrease any die by the value of 1 (a value of 1 cannot be decreased and a value of 6 cannot be increased)."},
             {"BUH, BYE!","2","3","1","Remove a status effect token from a chosen player."},
-            {"DOUBLE UP!","1","3","2","Draw 2 cards."}, {"TRIPLE UP!","2","3", "3", "Draw 3 cards."}, {"Getting Paid!","1","3","2","Gain 2 CP."} }, //Stock Cards
+            {"DOUBLE UP!","1","3","2","Draw 2 cards."},
+            {"TRIPLE UP!","2","3", "3", "Draw 3 cards."},
+            {"GETTING PAID!","1","3","2","Gain 2 CP."} }, //Stock Cards
             {{null, null, null, null, null}, {null, null, null, null, null}, {null, null, null, null, null}, {null, null, null, null, null},
             {null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null},
             {null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null},
@@ -290,81 +296,68 @@ namespace diceThroneAR
         // SET TO FINISH SEP. 24th at latest! **********************TIMELINE***********************
         public static string[,,] moves = new string[,,]
          {
-            { {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null},
-              {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null},
-              {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null},
-              {null, null, null, null, null, null, null, null} }, //Artificer      
-            { {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null},
-              {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null},
-              {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null},
-              {null, null, null, null, null, null, null, null} }, //Barbarian      
-            { {null, null, null, null, null, null, null, null}, {null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null} }, //Cursed Pirate  
-            { { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null} }, //Gunslinger     
-            { { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null} }, //Huntress       
-            { { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null} }, //Monk           
-            { { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null} }, //Moon Elf       
-            { { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null} }, //Ninja          
-            { { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null} }, //Paladin
-            { { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}}, //Pyromancer
-            { { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}}, //Samurai
-            { { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null} }, //Seraph
-            { { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null} }, //Shadow Thief
-            { { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null},
-              { null, null, null, null, null, null, null, null} }, //Tactician
-            { { "FERTILIZE",null,"DURING UPKEEP PHASE, 1 GAIN SPIRIT",null,null,null,null,null},
-              { "SPLINTER","3 [BRANCH]","5 DMG","4 [BRANCH]","6 DMG","5 [BRANCH]","7 DMG","MAY REMOVE 1 SPIRIT || 1 INFLICT BARBED VINE"},
-              { "TEND","2 [LEAF] 2 [SPIRIT]","1 DRAW || 3 GAIN SPIRIT || CHOSEN PLAYER 1 GAIN WELLSPRING || CHOSEN OPPONENT 1 INFLICT BARBED VINE",null,null,null,null,null},
-              { "OVERGROWTH","2 [BRANCH] 3 [LEAF]","2 DMG || MAY REMOVE UP TO 2 SPIRIT || MAY DISCARD 1 WELLSPRING TO MAKE ATTACK -UND","4 DMG PER SPIRIT","MAKE -UND",null,null,null},
-              { "VENGEFUL VINES","SMALL STRAIGHT","1 INFLICT BARBED VINE || 7 DMG",null,null,null,null,null},
-              { "CALL OF THE WILD","LARGE STRAIGHT","8 DMG || ROLL 4 DICE: Add 1 DMG x [BRANCH]. On [LEAF], 1 GAIN WELLSPRING. On [SPIRIT], 1 GAIN SPIRIT.",null,null,null,null,null},
-              { "NATURE'S GRASP","4 [SPIRIT]","2 GAIN SPIRIT || 5 DMG -UND || 1 DMG -UND PER SPIRIT",null,null,null,null,null},
-              { "ROOTED","1 [BRANCH]","PREVENT 1 DMG","1 [SPIRIT]","PREVENT 1 DMG","2 [LEAF]","1 GAIN SPIRIT",null},
-              { "WAKE THE FOREST!","6 [SPIRIT]","1 GAIN WELLSPRING || 1 GAIN WELLSPRING CHOSEN TEAMATE || 5 GAIN SPIRITS || 1 INFLECT BARBED VINE || 10 DMG -UND",null,null,null,null,null},
-              {null,null,null,null,null,null,null,null} }, //Treeant
-            { { "GOUGE","3 [CLAW]","3 DMG","4 [CLAW]","4 DMG","5 [CLAW]","5 DMG","ON 4-OF-A-KIND (#'S), 1 GAIN BLOOD POWER."},
-              { "SANGUIMANCY","3 [GAZE] 1 [DROPLET]","2 HEAL","3 GAIN BLOOD POWER",null,null,null,null},
-              { "GLAMOUR","3 [GAZE]","1 GAIN CP","1 GAIN MESMERIZE","4 DMG -UND",null,null,null},
-              { "REND","3 [CLAW] 2 [DROPLET]","6 DMG","ROLL 3 DICE: Add 1 DMG x [CLAW]. On [GAZE], DRAW 1 CARD. On [DROPLET], 1 GAIN BLOOD POWER.",null,null,null,null},
-              { "POSSESS","SMALL STRAIGHT","7 DMG","On [CLAW], INFLICT 1 BLEED.","On [DROPLET] or [BLOOD], 1 GAIN MESMERIZE.",null,null,null},
-              { "BLOOD MAGIC","LARGE STRAIGHT","1 GAIN BLOOD POWER","1 INFLICT BLEED", "8 DMG -UND",null,null,null},
-              { "BLOOD THIRST","4 [DROPLET]","2 GAIN BLOOD POWER","5 DNG -UND",null,null,null,null},
-              { "IMMORTAL FLESH","2 [CLAWS]","1 INFLICT BLEED","2 [GAZE]","1 GAIN BLOOD POWER","X [DROPLET]","X DMG X HEAL",null},
-              { null, null, null, null, null, null, null, null}, { null, null, null, null, null, null, null, null} } // 8 moves // Vampire Lord
+            { {null, null, null}, {null, null, null}, {null, null, null},
+              {null, null, null}, {null, null, null}, {null, null, null},
+              {null, null, null}, {null, null, null}, {null, null, null} }, //Artificer    
+            { {"SMACK", "6", "3 [SWORD] Deal 4 dmg | 4 [SWORD] Deal 6 dmg | 5 [SWORD] Deal 8 dmg"}, {"FORTITUDE", "6", "3 [LIFE] Heal 4 | 4 [LIFE] Heal 5 | 5 [LIFE] Heal 6"}.
+              {"STURDY BLOW", "6", "2 [SWORD] 2 [POW] Deal 4 undefendable dmg."}, {"OVERPOWER", "6", "3 [SWORD] 2 [POW] Roll 3 Dice: Then deal dmg equal to the total roll value. If the roll value is at least 14, inflict Concussion."},
+              {"MIGHTY BLOW", "6", "SMALL STRAIGHT Deal 9 dmg."}, {"RECKLESS", "6", "LARGE STRAIGHT Deal 15 dmg, receive 4 (und) dmg in return. (Return dmg only applies if at least 1 dmg was dealt successfully."},
+              {"CRIT BASH", "6", "4 [POW] Inflict Stun.  Then deal 5 undefendable dmg."}, {"RAGE!", "6", "5 [POW] Inflict Stun. Deal 15 (und) dmg."},
+              {"THICK SKIN", "7", "Roll 3 Dice. Heal 2 x [LIFE]"}}, //Barbarian      
+            { { null, null, null}, {null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null}}, //Cursed Pirate  
+            { { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null}}, //Gunslinger     
+            { { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null}}, //Huntress       
+            { { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null}}, //Monk           
+            { { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null}}, //Moon Elf       
+            { { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null}}, //Ninja          
+            { { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null}}, //Paladin
+            { { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null}}, //Pyromancer
+            { { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null}}, //Samurai
+            { { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null}}, //Seraph
+            { { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null}}, //Shadow Thief
+            { { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null},
+              { null, null, null}, { null, null, null}, { null, null, null}}, //Tactician
+              { { "FERTILIZE","5","During your Upkeep Phase, grow 1 Spirit."},
+              { "SPLINTER","6", "3 [BRANCH] Deal 5 dmg | 4 [BRANCH] Deal 6 dmg | 5 [BRANCH] Deal 7 dmg | You may discard 1 Spirit to inflict Barbed Vine."},
+              { "TEND", "6", "2 [LEAF] 2 [SPIRIT] 1 DRAW CARD || 3 GAIN SPIRIT || CHOSEN PLAYER 1 GAIN WELLSPRING || CHOSEN OPPONENT 1 INFLICT BARBED VINE"},
+              { "OVERGROWTH", "6", "2 [BRANCH] 3 [LEAF] 2 DMG || MAY REMOVE UP TO 2 SPIRIT || MAY DISCARD 1 WELLSPRING TO MAKE ATTACK -UND 4 DMG PER SPIRIT MAKE -UND"},
+              { "VENGEFUL VINES", "6", "SMALL STRAIGHT 1 INFLICT BARBED VINE || 7 DMG"},
+              { "CALL OF THE WILD","6", "LARGE STRAIGHT 8 DMG || ROLL 4 DICE: Add 1 DMG x [BRANCH]. On [LEAF], 1 GAIN WELLSPRING. On [SPIRIT], 1 GAIN SPIRIT."},
+              { "NATURE'S GRASP","6","4 [SPIRIT] 2 GAIN SPIRIT || 5 DMG -UND || 1 DMG -UND PER SPIRIT"},
+              { "WAKE THE FOREST!", "6", "6 [SPIRIT] 1 GAIN WELLSPRING || 1 GAIN WELLSPRING CHOSEN TEAMATE || 5 GAIN SPIRITS || 1 INFLECT BARBED VINE || 10 DMG -UND"},
+              { "ROOTED", "7","Roll 3 Dice. 1 [BRANCH] PREVENT 1 DMG, 1 [SPIRIT] PREVENT 1 DMG, 2 [LEAF] 1 GAIN SPIRIT"} }, //Treeant
+            { { "GOUGE", "6", "3 [CLAW] Deal 3 dmg | 4 [CLAW] Deal 5 dmg | 5 [CLAW] Deal 7 dmg | On 4-of-a-kind (#'S), gain Blood Power."},
+              { "SANGUIMANCY", "6", "3 [GAZE] 1 [DROPLET] Heal 2. Gain 3 Blood Power."},
+              { "GLAMOUR", "6", "3 [GAZE] Gain 1 CP. Gain Mesmerize. Deal 4 undefendable dmg."},
+              { "REND", "6", "3 [CLAW] 2 [DROPLET] Deal 6 dmg. Then roll 3 dice. Add 1 DMG x [CLAW]. On [GAZE], draw 1 card. On [DROPLET], gain Blood Power."},
+              { "POSSESS","6", "SMALL STRAIGHT Deal 7 dmg & roll 1 die: On [CLAW], inflict Bleed.  On [DROPLET] or [BLOOD], gain Mesmerize."},
+              { "BLOOD MAGIC", "6", "LARGE STRAIGHT Gain Blood Power. Inflict Bleed. Then deal 8 dmg.  You may spend Mesmerize to make this undefendable dmg."},
+              { "BLOOD THIRST", "6","4 [DROPLET] Gain 2 Blood Power. Then deal 5 undefendable dmg."},
+              { "EXSANGUINATE!", "6", "5 [DROPLET] Search your deck for any 1 card. Put it into your hand and then shuffle your deck. Gain 2 Blood Power.  Then deal 10 (und) dmg."},
+              { "IMMORTAL FLESH", "7", "Roll 3 dice. On 2 [CLAW], inflict Bleed. | On 2 [GAZE], gain Blood Power. | Steal 1 Health per [DROPLET] rolled."} } // 9 moves // Vampire Lord
         };
         // SET TO FINISH SEP. 21ST at latest! **********************TIMELINE***********************
         public static string[,] dice = new string[,] 
@@ -386,7 +379,6 @@ namespace diceThroneAR
             {"1", "BRANCH", "2", "BRANCH", "3", "BRANCH", "4", "LEAF", "5", "LEAF", "6", "SPIRIT"},         //Treeant
             {"1", "CLAW", "2", "CLAW", "3", "CLAW", "4", "GAZE", "5", "GAZE", "6", "DROPLET"}               //Vampire Lord
         };
-
         public static List<StatusEffect> generateStatusEffects(int charSelect)
         {
             int i = 0; List<StatusEffect> generatedStatusEffects = new List<StatusEffect>();
@@ -397,7 +389,6 @@ namespace diceThroneAR
             }
             return generatedStatusEffects;
         }
-
         public static List<Cards> generateDeck(int charSelect)
         {
             int i = 0; List<Cards> generatedDeck = new List<Cards>(); charSelect++;
@@ -436,6 +427,44 @@ namespace diceThroneAR
             }
             return generatedDeck;
         }
+        public static List<Cards> generatedMoves(int charSelect)
+        {
+            int i = 0; List<Cards> generatedMoves = new List<Cards>(); charSelect++;
+            while (cards[charSelect, i, 0] != null)                     // ALL CARDS be it MOVES / PLAYABLE CARDS HAVE A TITLE (0) == charSelect, i, 0
+            {
+                switch (cards[charSelect, i, 2])                        // the TWO references the CARD TYPE
+                {
+                    case "1":
+                        Cards card = new MainPhaseCard(int.Parse(cards[charSelect, i, 1]), cards[charSelect, i, 0], cards[charSelect, i, 4]);
+                        generatedDeck.Add(card); i++; break;
+                    case "2":
+                        Cards card2 = new RollPhaseCard(int.Parse(cards[charSelect, i, 1]), cards[charSelect, i, 0], cards[charSelect, i, 4]);
+                        generatedDeck.Add(card2); i++; break;
+                    case "3":
+                        Cards card3 = new InstantActionCard(int.Parse(cards[charSelect, i, 1]), cards[charSelect, i, 0], cards[charSelect, i, 4]);
+                        generatedDeck.Add(card3); i++; break;
+                    case "4":
+                        Cards card4 = new HeroUpgradeCard(int.Parse(cards[charSelect, i, 1]), cards[charSelect, i, 0], cards[charSelect, i, 4]);
+                        generatedDeck.Add(card4); i++; break;
+                }
+            }
+            i = 0; while (i < 18)
+            {
+                switch (cards[0, i, 2])                                 // this generates the stock deck
+                {
+                    case "1":
+                        Cards card = new MainPhaseCard(int.Parse(cards[0, i, 1]), cards[0, i, 0], cards[0, i, 4]);
+                        generatedDeck.Add(card); i++; break;
+                    case "2":
+                        Cards card2 = new RollPhaseCard(int.Parse(cards[0, i, 1]), cards[0, i, 0], cards[0, i, 4]);
+                        generatedDeck.Add(card2); i++; break;
+                    case "3":
+                        Cards card3 = new InstantActionCard(int.Parse(cards[0, i, 1]), cards[0, i, 0], cards[0, i, 4]);
+                        generatedDeck.Add(card3); i++; break;
+                }
+            }
+            return generatedMoves;
+        }
     }
 
     class StatusEffect
@@ -456,12 +485,11 @@ namespace diceThroneAR
     {
         public static int[] sides = { 1, 2, 3, 4, 5, 6 };
     }
-
-    //Moves will be cards == Moves type 5, Passive Ability type 6, Defensive type 7
+        
     class GameBoard
     {
         Moves[] moves = new Moves[9];
         Dice[] dice = new Dice[5];
         public bool haveStatusEffects = false;
-    }
+    } //Moves will be cards == Passive type 5, Moves type 6, Defensive type 7
 } /*----------------------------------------------------------------------------------------------------EST. COMPLETION == Nov. 21st, 2022 */
