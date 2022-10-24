@@ -4,7 +4,7 @@ using System.Text; using System.Threading.Tasks; using System.Threading;
 namespace diceThroneAR
 {
     //BATTLEGROUND -- Functions that help the GameFlow class.
-    class Battleground                                                          
+    class Battleground
     {
         public static Character currentPlayer;
         public static Character targettedPlayer;
@@ -70,7 +70,7 @@ namespace diceThroneAR
             }
             while (choice != -1); //TODO: Modify to only allow 1-(number of cards in hand) then display that number as the range of acceptible inputs.
             foreach (Cards card in activePlayer.hand) if (card.Type == 1 || card.Type == 4) card.isPlayable = false; //flips bool isPlayable to False at end of phase
-        } //MainPhase(Character activePlayer) allows for a Main Phase, Hero Upgrade, or Instant Action card and certain Status Effects to be played.
+        } //---MainPhase(Character activePlayer) allows for a Main Phase, Hero Upgrade, or Instant Action card and certain Status Effects to be played.
         public static void OffensiveRollPhase(Character activePlayer)
         {
             foreach (Cards card in activePlayer.hand) if (card.Type == 2) card.isPlayable = true; //sets the boolean isPlayable to true if Roll Phase card.
@@ -90,7 +90,7 @@ namespace diceThroneAR
                     do //==========================================================================================================================Leads to second roll
                     {
                         printRR(); //TODO: correlate the number rolled with the type of item on the character's di
-                        Console.WriteLine("\nPlease enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or 99 to reroll some or all of your dice.");
+                        Console.WriteLine("\nPlease enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or 99 to reroll some or all of your dice.\n");
                         if (!int.TryParse(Console.ReadLine(), out int num2)) Console.WriteLine("Invalid value entered, try again.");
                         else if (num2 == 99) //allows the player to pick 1-5 di(ce) and reroll
                         {
@@ -111,6 +111,7 @@ namespace diceThroneAR
                                     case 125: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                     case 1234: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); printRR(); break;
                                     case 1235: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
+                                    case 1245: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                     case 12345: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                     case 134: RollResults[0] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); printRR(); break;
                                     case 1345: RollResults[0] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
@@ -121,6 +122,7 @@ namespace diceThroneAR
                                     case 25: RollResults[1] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                     case 234: RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); printRR(); break;
                                     case 235: RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
+                                    case 245: RollResults[1] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                     case 2345: RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                     case 3: RollResults[2] = roll.Next(1, 7); printRR(); break;
                                     case 34: RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); printRR(); break;
@@ -132,7 +134,7 @@ namespace diceThroneAR
                                 }
                                 do //==========================================================================================================================Leads to final roll
                                 {
-                                    Console.WriteLine("\nPlease enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or 99 to reroll some or all of your dice.");
+                                    Console.WriteLine("\nPlease enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or 99 to reroll some or all of your dice.\n");
                                     if (!int.TryParse(Console.ReadLine(), out int num4)) Console.WriteLine("Invalid value entered, try again.");
                                     else if (num4 == 99) //allows the player to pick 1-5 di(ce) and reroll
                                     {
@@ -153,6 +155,7 @@ namespace diceThroneAR
                                                 case 125: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                                 case 1234: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); printRR(); break;
                                                 case 1235: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
+                                                case 1245: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                                 case 12345: RollResults[0] = roll.Next(1, 7); RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                                 case 134: RollResults[0] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); printRR(); break;
                                                 case 1345: RollResults[0] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
@@ -163,6 +166,7 @@ namespace diceThroneAR
                                                 case 25: RollResults[1] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                                 case 234: RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); printRR(); break;
                                                 case 235: RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
+                                                case 245: RollResults[1] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                                 case 2345: RollResults[1] = roll.Next(1, 7); RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); RollResults[4] = roll.Next(1, 7); printRR(); break;
                                                 case 3: RollResults[2] = roll.Next(1, 7); printRR(); break;
                                                 case 34: RollResults[2] = roll.Next(1, 7); RollResults[3] = roll.Next(1, 7); printRR(); break;
@@ -175,7 +179,7 @@ namespace diceThroneAR
 
                                             do //==========================================================================================================================Leads to SOGOTP moment
                                             {
-                                                Console.WriteLine("\nPlease enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or -1 if you cannot activate a move.");
+                                                Console.WriteLine("\nPlease enter the number of the move you wish to activate, the number of the card you wish to play, \n0 to view your hand or -1 if you cannot activate a move.\n");
                                                 if (!int.TryParse(Console.ReadLine(), out int num6)) Console.WriteLine("Invalid value entered, try again.");
                                                 else if (num6 == 0) { int cardCounter = 1; foreach (Cards card in activePlayer.hand) { Console.Write(cardCounter + ": "); card.ShowDetails(); cardCounter++; } }
                                                 else if (num6 > 0 && num6 <= CardsInHand)
@@ -184,7 +188,7 @@ namespace diceThroneAR
                                                     else { Console.WriteLine($"You played {activePlayer.hand[num6 - 1].Name}\n"); activePlayer.hand[num6 - 1].Action(); activePlayer.hand.RemoveAt(num6 - 1); activePlayer.cardsPlayed++; }
                                                 }
                                                 else if (num6 == -1) { choice4 = -1;  choice3 = -1; choice2 = -1; choice = -1; } //need to find a way to bypass Targetting/Defensive Phase and go straight to Main Phase 2
-                                                else if (num6 < -1 || (25 < num6 && num6 > CardsInHand) || num6 > 35) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 25 and 35!");
+                                                else if (num6 < -1 || (CardsInHand < num6 && num6 < 25) || num6 > 35) Console.WriteLine($"Value must be within -1 and {CardsInHand} or 25 and 35!");
                                                 else
                                                 {
                                                     switch (num6)
@@ -212,7 +216,7 @@ namespace diceThroneAR
                                         if (activePlayer.hand[num4 - 1].isPlayable != true) Console.WriteLine("This card is not currently playable.");
                                         else { Console.WriteLine($"You played {activePlayer.hand[num4 - 1].Name}\n"); activePlayer.hand[num4 - 1].Action(); activePlayer.hand.RemoveAt(num4 - 1); activePlayer.cardsPlayed++; }
                                     }
-                                    else if (num4 < 0 || (25 < num4 && num4 > CardsInHand) || num4 > 35) Console.WriteLine($"Value must be within 0 and {CardsInHand} or 25 and 35 or 99!");
+                                    else if (num4 < 0 || (CardsInHand < num4 && num4 < 25) || num4 > 35) Console.WriteLine($"Value must be within 0 and {CardsInHand} or 25 and 35 or 99!");
                                     else if (num4 == -1) { choice3 = -1; choice2 = -1; choice = -1; } //In the event that a player only has two rolls due to losing a roll turn...
                                     else
                                     {
@@ -276,7 +280,7 @@ namespace diceThroneAR
                 else if (num == -1) { Console.WriteLine("Advancing to next phase..."); choice = -1; } //<--shouldnt allow player to skip Offensive Roll Phase UNLESS MAYBE UNDER A KNOCKDOWN CONDITION??
             }
             while (choice != -1); //==================================================================================================================================Leads to first roll
-            Console.WriteLine("Advancing to the Targetting Roll phase...\n");
+            Console.WriteLine("\nAdvancing to the Targetting Roll phase...\n");
         } //OffensiveRollPhase(Character activePlayer) allows for a Roll Phase or Instant Action card and certain Status Effects to be played.
         public static Character TargetingRollPhase(Character activePlayer)
         {
@@ -287,13 +291,13 @@ namespace diceThroneAR
             // 3 or 4 - Target the opponent on your right
             // 5 - Your opponents choose which of them you target
             // 6 - Choose either opponent as your target
-            Console.WriteLine($"Your targetted player is {targettedPlayer.name}\n");
+            Console.WriteLine($"Your targetted player is {targettedPlayer.name}!\n");
             return targettedPlayer;
         }
         public static void DefensiveRollPhase(Character targettedPlayer)
         { 
-            //ADD CODE FOR players that have 2 defensive rolls PROTOCOL
-
+            //ADD CODE FOR players that must chose between 2 Defensive Abilities
+            //ADD CODE TO ACTIVATE WHERE Moves.type == 7
         }
     }
 
@@ -306,6 +310,10 @@ namespace diceThroneAR
         public bool Drawn { get; set; } = false;
         public bool Discarded { get; set; } = false;
         public bool isPlayable { get; set; } = false;
+        public Cards(string name, string desc)
+        {
+            this.Name = name.ToUpper(); this.Desc = desc;
+        }
         public Cards(int cpcost, string name, string desc)
         {
             this.CPCost = cpcost; this.Name = name.ToUpper(); this.Desc = desc;
@@ -363,6 +371,39 @@ namespace diceThroneAR
         {
             Console.WriteLine(Name + " CP Cost: " + CPCost + " || Is Playable? = " + isPlayable + "\n" +
                 "Type: " + Type + " || Description: " + Desc + "\n");
+        }
+    }
+    class PassiveAbility : Cards
+    {
+        new public string Type = "Passive Ability"; //5
+
+        public PassiveAbility(string name, string desc) : base(name, desc)
+        { base.Type = 5; }
+        public override void ShowDetails()
+        {
+            Console.WriteLine(Name + " || Type: " + Type + " || Description: " + Desc + "\n");
+        }
+    }
+    class OffensiveAbility : Cards
+    {
+        new public string Type = "Offensive Ability"; //6
+
+        public OffensiveAbility(string name, string desc) : base(name, desc)
+        { base.Type = 6; }
+        public override void ShowDetails()
+        {
+            Console.WriteLine(Name + " || Type: " + Type + " || Description: " + Desc + "\n");
+        }
+    }
+    class DefensiveAbility : Cards
+    {
+        new public string Type = "Defensive Ability"; //7
+
+        public DefensiveAbility(string name, string desc) : base(name, desc)
+        { base.Type = 7; }
+        public override void ShowDetails()
+        {
+            Console.WriteLine(Name + " || Type: " + Type + " || Description: " + Desc + "\n");
         }
     }
 }

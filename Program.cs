@@ -10,6 +10,7 @@ namespace diceThroneAR
             Character player1 = new Character("1", CharacterInfo.names[charSelect], CharacterInfo.introQuips[charSelect]);
             player1.statusEffects.AddRange(CharacterInfo.generateStatusEffects(charSelect));
             player1.cards.AddRange(CharacterInfo.generateDeck(charSelect));
+            player1.moves.AddRange(CharacterInfo.generatedMoves(charSelect));
             player1.IntroCharacter();
             GameFlow.gameModeSelect();
             GameFlow.gameMatchMaking(player1, GameFlow.player2);
