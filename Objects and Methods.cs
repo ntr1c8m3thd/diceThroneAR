@@ -1,30 +1,51 @@
-﻿using System; using System.Collections; using System.Collections.Generic; using static diceThroneAR.Battleground;
-using System.Linq; using System.Text; using System.Threading; using System.Threading.Tasks;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using static diceThroneAR.Battleground;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace diceThroneAR
 {
-    class GameFlow {
+    class GameFlow
+    {
         public static int numberOfPlayers = 1; public static Character player2;
-        
-        //characterSelect() allows Player 1 to choose his character from a list of available characters
-        public static int characterSelect()
-        {   Console.WriteLine("Welcome to DICE THRONE!"); Thread.Sleep(500); Console.WriteLine("Character List:"); Thread.Sleep(500);
-            ArrayList characters = new() { "[1] Artificer", "[2] Barbarian", "[3] Cursed Pirate", "[4] Gunslinger", "[5] Huntress", "[6] Monk", "[7] Moon Elf", "[8] Ninja" };
-            ArrayList characters2 = new() { "[9] Paladin", "[10] Pyromancer", "[11] Samurai", "[12] Seraph", "[13] Shadow Thief", "[14] Tactician", "[15] Treeant", "[16] Vampire Lord" };
+
+        public static int characterSelect() //characterSelect() allows Player 1 to choose his character from a list of available characters
+        {
+            Console.WriteLine("Welcome to DICE THRONE!"); Thread.Sleep(500);
+            Console.WriteLine("Character List:"); Thread.Sleep(500);
+            ArrayList characters = new() { "[1] Artificer", "[2] Barbarian", "[3] Cursed Pirate", "[4] Gunslinger",
+                "[5] Huntress", "[6] Monk", "[7] Moon Elf", "[8] Ninja" };
+            ArrayList characters2 = new() { "[9] Paladin", "[10] Pyromancer", "[11] Samurai", "[12] Seraph",
+                "[13] Shadow Thief", "[14] Tactician", "[15] Treeant", "[16] Vampire Lord" };
             characters.AddRange(characters2); int count = 1; int count2 = 0;
             foreach (string name in characters) //--------------------------------------------------Cleanly displays 4 characters per row
-            { if (count != characters.Count) { if (count2 != 3) { /*printEachChar()*/Console.Write(name); Console.Write(", "); count++; count2++; Thread.Sleep(100); } //Can add or remove pEC() to name to speed up TESTING
-              else { Console.Write(name + "\n"); count2 = 0; Thread.Sleep(100); } } else Console.Write(name); Thread.Sleep(100); } Thread.Sleep(555); int charSelect = -1;
-            while (charSelect < 0) { Console.WriteLine("\nEnter your character's number to continue: ");
-              if (!int.TryParse(Console.ReadLine(), out int num)) Console.WriteLine("Invalid value entered, try again.");
-              else if ((num < 1 || num > 16)) Console.WriteLine("Value must be within 1 and 16");
-              else { Console.WriteLine($"You chose {characters[num - 1]}"); charSelect = num - 1; } }
+            {
+                if (count != characters.Count)
+                {
+                    if (count2 != 3)
+                    { /*printEachChar()*/Console.Write(name); Console.Write(", "); count++; count2++; Thread.Sleep(100); }
+                    else { Console.Write(name + "\n"); count2 = 0; Thread.Sleep(100); }
+                }
+                else Console.Write(name); Thread.Sleep(100);
+            }
+            Thread.Sleep(555); int charSelect = -1;
+            while (charSelect < 0)
+            {
+                Console.WriteLine("\nEnter your character's number to continue: ");
+                if (!int.TryParse(Console.ReadLine(), out int num)) Console.WriteLine("Invalid value entered, try again.");
+                else if ((num < 1 || num > 16)) Console.WriteLine("Value must be within 1 and 16");
+                else { Console.WriteLine($"You chose {characters[num - 1]}"); charSelect = num - 1; }
+            }
             Thread.Sleep(555); return charSelect;
-        } //------------------------------------------------------------------------------------------------------------------DONE
+        }
 
-        //gameModeSelect() prompts Player 1 to choose from 7 gamemode styles, generating a match based off of desired opponents
-        public static void gameModeSelect()
-        {   Console.WriteLine("°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`");
+        public static void gameModeSelect() //gameModeSelect() prompts Player 1 to choose from 3 gamemode styles, 
+                                            //generating a match based off of the desired opponents
+        {
             ArrayList gameMode = new() { "[1] King of the Hill", "[2] 1v1", "[3] 2v2" };
             int gameModeSelect = -1;
             while (gameModeSelect < 0)
@@ -34,7 +55,7 @@ namespace diceThroneAR
                 Console.WriteLine();
                 if (!int.TryParse(Console.ReadLine(), out int num))
                     Console.WriteLine("Invalid value entered, try again.");
-                else if ((num < 1 || num > 7)) Console.WriteLine("Please select inputting a value 1 - 7");
+                else if ((num < 1 || num > 7)) Console.WriteLine("Please choose by inputting a value between 1 - 3");
                 else { Console.WriteLine($"You chose {gameMode[num - 1]}"); gameModeSelect = num; }
             }
             Thread.Sleep(1000);
@@ -47,57 +68,78 @@ namespace diceThroneAR
                     Console.WriteLine("\nPlease select from the following opponents:\n[1] CPU, [2] Local Friend, [3] Online Opponent");
                     if (!int.TryParse(Console.ReadLine(), out int num))
                         Console.WriteLine("Invalid value entered, try again.");
-                    else if ((num < 1 || num > 3)) Console.WriteLine("Please select inputting a value 1 - 3");
+                    else if ((num < 1 || num > 3)) Console.WriteLine("Please choose by inputting a value between 1 - 3");
                     else { Console.WriteLine($"You chose {opponent[num - 1]}"); opponentSelect = num; }
 
                     printEachChar("\nGenerating a Random CPU opponent...\n");                 //***COME BACK TO FIX!
                     //WILL NEED TO ADD A CASE STATEMENT TO GENERATE WHICH OPPONENT IS SELECTED (opponentSelect integer value)
 
-                    Random cpu = new Random(); int cpuRand = cpu.Next(0, 13);
+                    Random cpu = new Random(); /*int cpuRand = cpu.Next(0, 13);*/ int cpuRand = 13;                                                      //<========== HARD SET RANDOM CPU AS SHADOW THIEF ========== 
                     player2 = new Character("2", CharacterInfo.names[cpuRand], CharacterInfo.introQuips[cpuRand]);
                     player2.statusEffects.AddRange(CharacterInfo.generateStatusEffects(cpuRand));
                     player2.cards.AddRange(CharacterInfo.generateDeck(cpuRand));
-                    player2.moves.AddRange(CharacterInfo.generatedMoves(cpuRand)); player2.IntroCharacter();
+                    player2.moves.AddRange(CharacterInfo.generateMoves(cpuRand)); player2.IntroCharacter();
+                    player2.dice.AddRange(CharacterInfo.generateDice(cpuRand));
                     break;
-                case 3: break;
-                //case 4: break;
-                //case 5: break;
-                //case 6: break;
-                //case 7: break;
-            } } //-------------Needs KOTH (3 player game) and 2v2 additionally (variant game modes will be future ADD ON/EXPANSION PACK)
+                case 3: break; //case 4: break; //case 5: break; //case 6: break; //case 7: break;
+            }
+        }
+        //=TODO=>    Needs KOTH (3 player game) and 2v2 additionally (**variant game modes will be added on in the future**)
+        //
 
-        //gameMatchMaking(List<Characters>) matchmaking system for 2+ characters
-        public static void gameMatchMaking(Character p1, Character p2) 
-        {   shuffleCards(p1, p1.cards.Count); shuffleCards(p2, p2.cards.Count);
-
+        public static void gameMatchMaking(Character p1, Character p2) //gameMatchMaking(List<Characters>) matchmaking system
+                                                                       //for 2+ characters
+        {
+            shuffleCards(p1, p1.cards.Count); shuffleCards(p2, p2.cards.Count);
             Console.WriteLine("°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`\n");
             Console.WriteLine("Press enter to shuffle the cards and draw your starting hand (4 cards)!\n"); Console.ReadKey();
-
-            Console.WriteLine("Here are player 1's drawn cards: " + p1.name.ToString() + "\n");
+            Console.WriteLine("Here are your drawn cards: " + p1.name.ToString() + "\n");
             int c = 0; while (c < 4) { Console.Write(c + 1 + ": "); p1.cards[c].ShowDetails(); p1.cards[c].Drawn = true; p1.hand.Add(p1.cards[c]); c++; }
-            Console.WriteLine("Here are player 2's drawn cards: " + p2.name.ToString() + "\n");
-            int d = 0; while (d < 4) { Console.Write(d + 1 + ": "); p2.cards[d].ShowDetails(); p2.cards[d].Drawn = true; p2.hand.Add(p2.cards[d]); d++; }
-
+            //Console.WriteLine("Here are player 2's drawn cards: " + p2.name.ToString() + "\n");
+            int d = 0; while (d < 4) { /*Console.Write(d + 1 + ": "); p2.cards[d].ShowDetails();*/ p2.cards[d].Drawn = true; p2.hand.Add(p2.cards[d]); d++; }
+            Console.WriteLine("Press enter to Roll for First.");
             Console.ReadKey();
-            Battleground.MainPhase(rollForFirst(p1, p2));
+
+            Battleground.MainPhase(RollForFirst(p1, p2));
             Battleground.OffensiveRollPhase(Battleground.currentPlayer);
             Battleground.DefensiveRollPhase(Battleground.TargetingRollPhase(Battleground.currentPlayer));
+            Battleground.MainPhase(currentPlayer);
+            Battleground.DiscardPhase(currentPlayer);
+
+            while (p1.hP >= 0 || p2.hP >= 0)
+            {
+                Console.WriteLine($"Beginning {currentPlayer.name}'s turn!\n");
+                Console.WriteLine($"Current Health = {currentPlayer.hP} || CP = {currentPlayer.cP}!\n");
+                UpkeepPhase(currentPlayer);
+                IncomePhase(currentPlayer);
+                MainPhase(currentPlayer);
+                OffensiveRollPhase(currentPlayer);
+                DefensiveRollPhase(TargetingRollPhase(currentPlayer));
+                MainPhase(currentPlayer);
+                DiscardPhase(currentPlayer);
+            }
             Console.ReadKey();
-        } //----------------------------------------------------------Needs to take a List<Characters>
+        }
+        //=TODO=>    Needs to take a List<Character>
+        //
     }
 
     class Character
     {
         public bool WinFirstRoll { get; set; } = false;
-        public int cP = 2, hP = 50, cardsPlayed = 0;
+        public int cP = 2, hP = 50, cardsPlayed = 0, nextCardtoDraw = 5;
         public string team, name;
         public string introQuip;
+        //public string[] diceSymbols;
         public List<StatusEffect> statusEffects = new List<StatusEffect>();
         public List<Cards> cards = new List<Cards>();
         public List<Cards> hand = new List<Cards>();
         public List<Cards> moves = new List<Cards>();
+        public List<Dice> dice = new List<Dice>();
         public Character(string t, string n, string iQ)
-        { this.team = t; this.name = n; this.introQuip = iQ; }
+        {
+            this.team = t; this.name = n; this.introQuip = iQ;
+        }
         public void IntroCharacter()
         {
             Console.WriteLine($"\n\"{introQuip}\"");
@@ -111,10 +153,32 @@ namespace diceThroneAR
             Console.Write($"\n\"I have {moves.Count} moves currently available.\"\n\n");
             int moveCounter = 1;
             foreach (Cards m in moves) { Console.Write(moveCounter + ": "); m.ShowDetails(); moveCounter++; }
-            /*Console.Write($"\"I have {cards.Count} cards total.\"\n\n");
-            int cardCounter = 1;
-            foreach (Cards a in cards) { Console.Write(cardCounter + ": "); a.ShowDetails(); cardCounter++; }*/     //----COMMENTING OUT FOR NOW
+            Console.Write($"\"I have {cards.Count} cards total.\"\n\n");
+            //int cardCounter = 1;
+            //foreach (Cards a in cards) { Console.Write(cardCounter + ": "); a.ShowDetails(); cardCounter++; }
             //int c = 0; while (c < 5) { cards[c].ShowDetails(); c++; //Shows just five out of x amount of cards.}
+        }
+        public int DefenseRoll(Character targettedPlayer)
+        {
+            int defensiveDeduction;
+
+            //ACTION OF DEFENSIVE MOVE
+            Random roll = new Random(); int[] RollResults = new int[4];
+            Console.WriteLine("Press ENTER to Roll your Defensive Roll!");
+            Console.ReadKey();
+            for (int x = 0; x < 4; x++) RollResults[x] = roll.Next(1, 7);
+            Console.Write($"You rolled " +
+                    $"1: {RollResults[0]} {targettedPlayer.dice[1].symbols[RollResults[0] - 1]} || " +
+                    $"2: {RollResults[1]} {targettedPlayer.dice[1].symbols[RollResults[1] - 1]} || " +
+                    $"3: {RollResults[2]} {targettedPlayer.dice[1].symbols[RollResults[2] - 1]} || " +
+                    $"and 4: {RollResults[3]} {targettedPlayer.dice[1].symbols[RollResults[3] - 1]}\n\n");
+            //COMPARE AGAINST ROLL REQUIREMENTS FOR DEFENSIVE ROLL
+            //RESOLVE ACTIONS (COUNTER ATTACK DMG/STATUS EFFECTS
+            //RETURN A VALUE
+            defensiveDeduction = 2;
+            Console.WriteLine("Applying Damage and advancing to Main Phase II...\n");
+
+            return defensiveDeduction;
         }
     }
 
@@ -160,7 +224,6 @@ namespace diceThroneAR
             { {"Barbed Vine","2", "Negative"}, {"Crit", "2", "Positive"}, {"Protect", "2", "Positive"}, {"Accuracy", "2", "Positive"}, {"Blessing Of Divinity", "1", "Unique"}, {null, null, null}, {null, null, null}, {null, null, null}, {null, null, null} }, //Treeant
             { {"Blood Power","5", "Positive"}, {"Crit", "2", "Positive"}, {"Protect", "2", "Positive"}, {"Accuracy", "2", "Positive"}, {"Blessing Of Divinity", "1", "Unique"}, {null, null, null}, {null, null, null}, {null, null, null}, {null, null, null} } //Vampire Lord
         };
-        // SET TO FINISH OCT. 26th at latest! **********************TIMELINE*********************** FIX PYROMANCER AND BELOW
         public static string[,,] cards = new string[,,]
         {
             {{"TRANSFERENCE","2","1","1","Transfer 1 status effect token from a chosen player to another chosen player."},
@@ -246,9 +309,9 @@ namespace diceThroneAR
             {"Dagger Strike II","0","4","0","3 [DAGGER] Deal 4 dmg | 4 [DAGGER] Deal 6 dmg | 5 [DAGGER] Deal 8 dmg | Gain 1 CP.  If [SHADOW] was rolled, inflict Poison.  If [CARD] was rolled, draw 1 Card."},
             {"Pickpocket II","1","4","0","2 [BAG] Gain 3 CP | 3 [BAG] Gain 4 CP | 4 [BAG] Gain 5 CP | 5 [BAG] Gain 6 CP | If [SHADOW] was rolled, up to 2 CP may instead be stolen from your opponent."},
             {"Shifty Strike II/Shadow Strike (adds)","2","4","0","SMALL STRAIGHT Gain 4 CP.  Then deal 1/2 CP as dmg (rounded up). | 2 [DAGGER] 2 [SHADOWS] Deal 1/2 CP as dmg (rounded up).  Inflict Poison."},
-            {"Insidious Strike II/Shank Attack (adds)","2","4","0","LARGE STRAIGHT Gain 4 CP.  THen deal CP as dmg. | 1 [DAGGER] 1 [BAG] 1 [CARD] 1 [SHADOW] Gain 1 CP. Gain Sneak Attack.  Draw 1 Card.  Inflict Poison."},
+            {"Insidious Strike II/Shank Attack (adds)","2","4","0","LARGE STRAIGHT Gain 4 CP.  Then deal CP as dmg. | 1 [DAGGER] 1 [BAG] 1 [CARD] 1 [SHADOW] Gain 1 CP. Gain Sneak Attack.  Draw 1 Card.  Inflict Poison."},
             {"Shadow Dance II","1","4","0","3 [SHADOW] Roll 1 Di:  Deal 1/2 the value as pure dmg.  Then gain Shadows & Sneak Attack.  Draw 1 Card."},
-            {"Carducopia II","2","4","0","2 [CARD] Draw 1 Card x [CARD].  If [SHADOW] was rolled, your opponent discards 1 Card randomly.  If [BAG] was rolled, gain 1 CP."}, 
+            {"Carducopia II","2","4","0","2 [CARD] Draw 1 Card x [CARD].  If [SHADOW] was rolled, your opponent discards 1 Card randomly.  If [BAG] was rolled, gain 1 CP."},
             {"Shadow Defense II","3","4","0","DEFENSIVE ROLL 5 DICE On 2 [DAGGER], inflict Poison.  On 1 [SHADOW], gain Sneak Attack.  On 2 [SHADOW], gain Sneak Attack and Shadows immediately (ignoring incoming dmg)."},
             {"Counter Strike II","4","4","0","DEFENSIVE ROLL 5 DICE Deal 2 x [DAGGER] dmg.  On [DAGGER] [SHADOW], inflict Poison."},
             {null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null},{null, null, null, null, null}}, //Shadow Thief
@@ -260,7 +323,7 @@ namespace diceThroneAR
             {"Saber Strike II","1","4","0","3 [SABER] Deal 5 dmg | 4 [SABER] Deal 6 dmg | 5 [SABER] Deal 7 dmg | On 3-of-a-kind (#'s) inflict Constrict."},
             {"Profiteer II","2","4","0","1 [SABER] 3 [FLAG] Gain 2 Tactical Advantage & roll 1 Di:  On [SABER], deal 6 dmg.  On [FLAG], gain 3 Tactical Advantage.  On [MEDAL], draw 1 Card.  Then immediately begin an additional Offensive Roll Phase."},
             {"Carpet Bomb II/Strategize (adds)","2","4","0","2 [SABER] 2 [MEDAL] Gain 2 Tactical Advantage.  Then deal 2 collateral dmg to two different chosen opponents. | 4 [MEDAL] Gain 3 Tactical Advantage.  Draw 2 cards."},
-            {"Stratgeic Approach II/Indirect Approach (adds)","2","4","0","3 [SABER] 2 [MEDAL] Gain Tactical Advantage.  Inflict Constrict.  Then deal 7 dmg. | 3 [SABER] 1 [FLAG] Gain 2 Tactical Advantage.  Then deal 2 undefendable dmg."},
+            {"Strategic Approach II/Indirect Approach (adds)","2","4","0","3 [SABER] 2 [MEDAL] Gain Tactical Advantage.  Inflict Constrict.  Then deal 7 dmg. | 3 [SABER] 1 [FLAG] Gain 2 Tactical Advantage.  Then deal 2 undefendable dmg."},
             {"FLANK II","2","4","6","SMALL STRAIGHT Gain 2 Tactical Advantage.  Then deal 6 dmg."},
             {"Exploit II/Interdiction (adds)","2","4","8","LARGE STRAIGHT Gain 3 Tactical Advantage.  Inflict Constrict.  Then deal 9 dmg. | 1 [SABER] 2 [FLAG] 1 [MEDAL] Draw 2 Cards.  Inflict Constrict on a chosen player."},
             {"Maneuver II/Reconnaissance (adds)","2","4","5","4 [MEDAL] Gain 5 Tactical Advantage.  Inflict Constrict.  Then deal 5 undefendable dmg. | 3 [MEDAL] Gain 5 Tactical Advantage."},
@@ -299,7 +362,6 @@ namespace diceThroneAR
             {"IMMORTAL FLESH II","2","4","0","DEFENSIVE ROLL 4 DICE On 2 [CLAWS], inflict Bleed.  On 2 [GAZE], gain Blood Power.  Steal 1 Health per 1 [DROPLET] rolled."},
             {null, null, null, null, null}, {null, null, null, null, null}, {null, null, null, null, null}}, //Vampire Lord
         };
-        // SET TO FINISH NOV. 2ND at latest!  **********************TIMELINE***********************
         public static string[,,] moves = new string[,,]
          {
             { {null, null, null}, {null, null, null}, {null, null, null},
@@ -340,12 +402,24 @@ namespace diceThroneAR
             { { null, null, null}, { null, null, null}, { null, null, null},
               { null, null, null}, { null, null, null}, { null, null, null},
               { null, null, null}, { null, null, null}, { null, null, null}, {null, null, null} }, //Seraph
-            { { null, null, null}, { null, null, null}, { null, null, null},
-              { null, null, null}, { null, null, null}, { null, null, null},
-              { null, null, null}, { null, null, null}, { null, null, null}, {null, null, null} }, //Shadow Thief
-            { { null, null, null}, { null, null, null}, { null, null, null},
-              { null, null, null}, { null, null, null}, { null, null, null},
-              { null, null, null}, { null, null, null}, { null, null, null}, {null, null, null} }, //Tactician
+            { { "DAGGER STRIKE","6","3 [DAGGER] Deal 4 dmg | 4 [DAGGER] Deal 6 dmg | 5 [DAGGER] Deal 8 dmg | If [BAG] was rolled, gain I CP.  If [SHADOW] was rolled, inflict Poison."},
+              { "PICKPOCKET","6","2 [BAG] Gain 2 CP | 3 [BAG] Gain 3 CP | 4 [BAG] Gain 4 CP | If [SHADOW] was rolled, up to 1 CP may instead be stolen from your opponent."},
+              { "SHIFTY STRIKE","6","SMALL STRAIGHT Gain 3 CP.  Then deal 1/2 CP as dmg (rounded up)."},
+              { "INSIDIOUS STRIKE","6","LARGE STRAIGHT Gain 3 CP.  Then deal CP as dmg."},
+              { "SHADOW DANCE","6","3 [SHADOW] Roll 1 Die:  Deal 1/2 the value as pure dmg.  Then gain Shadows & Sneak Attack."},
+              { "CARDUCOPIA","6","2 [CARD] Draw 1 x [CARD]." },
+              { "SHADOW SHANK!","6","5 [SHADOW] Gain 3 CP and gain Shadows.  Then deal CP as dmg + 5."},
+              { "SHADOW DEFENSE","7","DEFENSIVE ROLL 4 DICE | On 2 [DAGGER], inflict Poison.  On [SHADOW], gain Sneak Attack.  On 2 [SHADOW], gain Sneak Attack and Shadows immediately (ignoring incoming dmg)."},
+              { "COUNTER STRIKE","7","DEFENSIVE ROLL 5 DICE | Deal 1 x [DAGGER] dmg.  On [DAGGER] [SHADOW], inflict Poison."}, { null, null, null} }, // 7 initial Offensive Abilities + 2 Defensive Ability = 9 total moves initially // Shadow Thief
+            { { "SABER STRIKE","6","3 [SABER] Deal 4 dmg | 4 [SABER] Deal 5 dmg | 5 [SABER] Deal 6 dmg."},
+              { "PROFITEER","6","1 [SABER] 3 [FLAG] Gain Tactical Advantage & roll 1 Die:  On [SABER], deal 5 dmg.  On [FLAG], gain 4 Tactical Advantage.  On [MEDAL], draw 1 Card.  Then immediately begin an additional Offensive Roll Phase."},
+              { "CARPET BOMB","6","2 [SABER] 2 [MEDAL] Gain Tactical Advantage.  Then deal 2 collateral dmg to two different chosen opponents."},
+              { "Strategic Approach","6","3 [SABER] 2 [MEDAL] Inflict Constrict.  Deal 7 dmg."},
+              { "FLANK","6","SMALL STRAIGHT Gain Tactical Advantage.  Then deal 6 dmg."},
+              { "EXPLOIT","6","LARGE STRAIGHT Gain 2 Tactical Advantage.  Inflict Constrict.  Then deal 9 dmg."},
+              { "MANUEVER","6","4 [MEDAL] Gain 5 Tactical Advantage.  Then deal 5 undefendable dmg."},
+              { "HIGHER GROUND!","6","5 [MEDAL] Inflict Targeted & Constrict.  Increase Tactical Advantage stack limit by 1.  Then gain max Tractical Advantage & deal 12 dmg."},
+              { "COUNTERMEASURES","7","DEFENSIVE ROLL 4 DICE | For every 2 [SABER], deal 1 dmg.  Prevent 1 x [FLAG] dmg.  Gain 1 x [MEDAL] Tactical Advantage."}, {null, null, null} }, // 8 initial Offesnvie Abilities + 1 Defensive Ability = 9 total moves initially // Tactician
             { { "FERTILIZE","5","During your Upkeep Phase, grow 1 Spirit."},
               { "SPLINTER","6", "3 [BRANCH] Deal 5 dmg | 4 [BRANCH] Deal 6 dmg | 5 [BRANCH] Deal 7 dmg | You may discard 1 Spirit to inflict Barbed Vine."},
               { "TEND", "6", "2 [LEAF] 2 [SPIRIT] 1 DRAW CARD || 3 GAIN SPIRIT || CHOSEN PLAYER 1 GAIN WELLSPRING || CHOSEN OPPONENT 1 INFLICT BARBED VINE"},
@@ -365,25 +439,24 @@ namespace diceThroneAR
               { "EXSANGUINATE!", "6", "5 [DROPLET] Search your deck for any 1 card. Put it into your hand and then shuffle your deck. Gain 2 Blood Power.  Then deal 10 (und) dmg."},
               { "IMMORTAL FLESH", "7", "Roll 3 dice. On 2 [CLAW], inflict Bleed. | On 2 [GAZE], gain Blood Power. | Steal 1 Health per [DROPLET] rolled."}, {null, null, null} } // 8 initial Offensive Abilities + 1 Defensive Ability = 9 total moves initially // Vampire Lord
         };
-        // SET TO FINISH OCT. 29th at latest! **********************TIMELINE***********************
-        public static string[,] dice = new string[,] 
+        public static string[,] dice = new string[,]
         {
-            {"1", "WRENCH", "2", "WRENCH", "3", "WRENCH", "4", "GEAR", "5", "GEAR", "6", "BOLT"},           //Artificer
-            {"1", "SWORD", "2", "SWORD", "3", "SWORD", "4", "LIFE", "5", "LIFE", "6", "POW"},               //Barbarian
-            {"1", "CUTLASS", "2", "CUTLASS", "3", "CUTLASS", "4", "BOOTY", "5", "BOOTY", "6", "SKULL"},     //Cursed Pirate
-            {"1", "BULLET", "2", "BULLET", "3", "BULLET", "4", "DASH", "5", "DASH", "6", "BULLSEYE"},       //Gunslinger
-            {"1", "SPEAR", "2", "SPEAR", "3", "CLAW", "4", "CLAW", "5", "BONDED SOUL", "6", "SABER TOOTH"}, //Huntress
-            {"1", "FIST", "2", "FIST", "3", "PALM", "4", "ZEN", "5", "ZEN", "6", "LOTUS"},                  //Monk
-            {"1", "ARROW", "2", "ARROW", "3", "ARROW", "4", "FOOT", "5", "FOOT", "6", "MOON"},              //Moon Elf
-            {"1", "NINJATÓ", "2", "NINJATÓ", "3", "NINJATÓ", "4", "SHURIKEN", "5", "SHURIKEN", "6", "MASK"},//Ninja
-            {"1", "SWORD", "2", "SWORD", "3", "HELMET", "4", "HELMET", "5", "LIFE", "6", "PRAYER"},         //Paladin
-            {"1", "FLAME", "2", "FLAME", "3", "FLAME", "4", "BLAZE", "5", "FIERY SOUL", "6", "METEOR"},     //Pyromancer
-            {"1", "KATANA", "2", "KATANA", "3", "KATANA", "4", "KABUTO", "5", "KABUTO", "6", "RISING SUN"}, //Samurai
-            {"1", "BLADE", "2", "BLADE", "3", "BLADE", "4", "WINGS", "5", "CROSS", "6", "ANGELIC PENDANT"}, //Seraph
-            {"1", "DAGGER", "2", "DAGGER", "3", "BAG", "4", "BAG", "5", "CARD", "6", "SHADOW"},             //Shadow Thief
-            {"1", "SABER", "2", "SABER", "3", "SABER", "4", "FLAG", "5", "FLAG", "6", "MEDAL"},             //Tactician
-            {"1", "BRANCH", "2", "BRANCH", "3", "BRANCH", "4", "LEAF", "5", "LEAF", "6", "SPIRIT"},         //Treeant
-            {"1", "CLAW", "2", "CLAW", "3", "CLAW", "4", "GAZE", "5", "GAZE", "6", "DROPLET"}               //Vampire Lord
+            {"WRENCH", "WRENCH", "WRENCH", "GEAR", "GEAR", "BOLT"},           //Artificer
+            {"SWORD", "SWORD", "SWORD", "LIFE", "LIFE", "POW"},               //Barbarian
+            {"CUTLASS", "CUTLASS", "CUTLASS", "BOOTY", "BOOTY", "SKULL"},     //Cursed Pirate
+            {"BULLET", "BULLET", "BULLET", "DASH", "DASH", "BULLSEYE"},       //Gunslinger
+            {"SPEAR", "SPEAR", "CLAW", "CLAW", "BONDED SOUL", "SABER TOOTH"}, //Huntress
+            {"FIST", "FIST", "PALM", "ZEN", "ZEN", "LOTUS"},                  //Monk
+            {"ARROW", "ARROW", "ARROW", "FOOT", "FOOT", "MOON"},              //Moon Elf
+            {"NINJATÓ", "NINJATÓ", "NINJATÓ", "SHURIKEN", "SHURIKEN", "MASK"},//Ninja
+            {"SWORD", "SWORD", "HELMET", "HELMET", "LIFE", "PRAYER"},         //Paladin
+            {"FLAME", "FLAME", "FLAME", "BLAZE", "FIERY SOUL", "METEOR"},     //Pyromancer
+            {"KATANA", "KATANA", "KATANA", "KABUTO", "KABUTO", "RISING SUN"}, //Samurai
+            {"BLADE", "BLADE", "BLADE", "WINGS", "CROSS", "ANGELIC PENDANT"}, //Seraph
+            {"DAGGER", "DAGGER", "BAG", "BAG", "CARD", "SHADOW"},             //Shadow Thief
+            {"SABER", "SABER", "SABER", "FLAG", "FLAG", "MEDAL"},             //Tactician
+            {"BRANCH", "BRANCH", "BRANCH", "LEAF", "LEAF", "SPIRIT"},         //Treeant
+            {"CLAW", "CLAW", "CLAW", "GAZE", "GAZE", "DROPLET"}               //Vampire Lord
         };
         public static List<StatusEffect> generateStatusEffects(int charSelect)
         {
@@ -416,7 +489,7 @@ namespace diceThroneAR
                         generatedDeck.Add(card4); i++; break;
                 }
             }
-            i = 0; while (i < 18) 
+            i = 0; while (i < 18)
             {
                 switch (cards[0, i, 2])                                 // this generates the stock deck
                 {
@@ -433,7 +506,7 @@ namespace diceThroneAR
             }
             return generatedDeck;
         }
-        public static List<Cards> generatedMoves(int charSelect)
+        public static List<Cards> generateMoves(int charSelect)
         {
             int i = 0; List<Cards> generatedMoves = new List<Cards>();
             while (moves[charSelect, i, 0] != null)                     // ALL CARDS be it MOVES / PLAYABLE CARDS HAVE A TITLE (0) == charSelect, i, 0
@@ -453,6 +526,25 @@ namespace diceThroneAR
             }
             return generatedMoves;
         }
+        public static List<Dice> generateDice(int charSelect)
+        {
+            int y = 1, m = 0; List<Dice> generatedDice = new List<Dice>();
+
+            string[] symbols = new string[6];
+            for (int i = 0; i < 6; i++) symbols[i] = dice[charSelect, i];
+
+            while (y < 6)
+            {
+                Dictionary<int, string> sAS = new Dictionary<int, string>();
+                while (m < 6)
+                {
+                    sAS.Add(m, dice[charSelect, m]); m++;
+                }
+                Dice die = new Dice(y, symbols, sAS);
+                generatedDice.Add(die); y++;
+            }
+            return generatedDice;
+        }
     }
 
     class StatusEffect
@@ -467,17 +559,18 @@ namespace diceThroneAR
     {
         public string name, diceCombo;
         public bool isInvisibleLocked = true;
-    }
+    } //Moves are cards == Passive Abilities type 5, Offensive Abilities type 6, Defensive Abilities type 7
 
     class Dice
     {
-        public static int[] sides = { 1, 2, 3, 4, 5, 6 };
-    }
-        
+        public int number;
+        public string[] symbols;
+        public Dictionary<int, string> sidesAndSymbols = new Dictionary<int, string>();
+        public Dice(int num, string[] sym, Dictionary<int, string> sAS) { this.number = num; this.symbols = sym; this.sidesAndSymbols = sAS; }
+    } // NOT USED YET -- mainly a shell class for the 3D dice imagery
+
     class GameBoard
     {
-        Moves[] moves = new Moves[9];
-        Dice[] dice = new Dice[5];
-        public bool haveStatusEffects = false;
-    } //Moves will be cards == Passive type 5, Moves type 6, Defensive type 7
-} /*----------------------------------------------------------------------------------------------------EST. COMPLETION == Nov. 21st, 2022 */
+        public List<StatusEffect> inPlaySEs = new List<StatusEffect>();
+    } // NEED TO IMPLEMENT SOON /\/ will house all the in-play Status Effects for the character
+}
